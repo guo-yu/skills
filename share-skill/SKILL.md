@@ -422,26 +422,73 @@ done
 
 ## 目录结构
 
-迁移后的结构：
+### 混合 Git 管理模式
+
+share-skill 支持两种 Git 管理模式：
+
+| 模式 | 触发条件 | Git 结构 | 远端 |
+|------|---------|---------|------|
+| **Monorepo** | 使用默认端点 | 父仓库管理 | `guo-yu/skills` |
+| **独立仓库** | 指定自定义端点 | 独立 .git | 用户指定 |
+
+### Monorepo 模式（默认）
+
+当使用默认端点时，所有 skill 由父仓库 `~/Codes/skills/.git` 统一管理：
 
 ```
-~/.claude/
-├── share-skill-config.json              # 远端别名配置
-└── skills/
-    ├── port-allocator -> ~/Codes/skills/port-allocator  (符号链接)
-    ├── share-skill -> ~/Codes/skills/share-skill        (符号链接)
-    ├── art-master/                                       (本地)
-    └── ...
-
 ~/Codes/skills/
-├── port-allocator/
-│   ├── .git/
+├── .git/                      # 父仓库 → guo-yu/skills
+├── .gitignore
+├── README.md
+├── port-allocator/            # 无独立 .git，由父仓库管理
 │   ├── .gitignore
 │   └── SKILL.md
-└── share-skill/
-    ├── .git/
+├── share-skill/
+│   ├── .gitignore
+│   └── SKILL.md
+└── skill-permissions/
     ├── .gitignore
     └── SKILL.md
+```
+
+**操作方式：**
+```bash
+# 新增 skill 后
+cd ~/Codes/skills
+git add <new-skill>/
+git commit -m "Add <new-skill>"
+git push
+```
+
+### 独立仓库模式（自定义端点）
+
+当用户指定自定义端点时，该 skill 拥有独立的 .git：
+
+```
+~/Codes/skills/
+├── .git/                      # 父仓库
+├── .gitignore                 # 包含: /custom-skill/
+├── custom-skill/              # 独立仓库 → 用户指定的地址
+│   ├── .git/
+│   └── SKILL.md
+└── port-allocator/            # 由父仓库管理
+```
+
+**父仓库 .gitignore 自动更新：**
+```gitignore
+# Skills with custom endpoints
+/custom-skill/
+```
+
+### 符号链接
+
+无论哪种模式，`~/.claude/skills/` 中都使用符号链接：
+
+```
+~/.claude/skills/
+├── port-allocator -> ~/Codes/skills/port-allocator
+├── share-skill -> ~/Codes/skills/share-skill
+└── skill-permissions -> ~/Codes/skills/skill-permissions
 ```
 
 ## 首次使用
