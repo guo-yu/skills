@@ -843,7 +843,80 @@ const BRANCH = 'master';             // または 'main'
 const CACHE_VERSION = Date.now();    // キャッシュバスティング用
 ```
 
-#### 6. 三カラムレイアウト
+#### 6. マーケティングセクション（なぜこのスキルを使うのか？）
+
+各スキルはドキュメントコンテンツの上に魅力的なマーケティングセクションを表示します：
+- **ヘッドライン**：価値提案を説明するキャッチーな一行
+- **理由**：ユーザーがこのスキルを使うべき理由を説明する段落
+- **ペインポイント**：スキルが解決する問題を示す3つのカード
+
+**main.js の SKILL_MARKETING データ構造：**
+
+```javascript
+const SKILL_MARKETING = {
+    'skill-name': {
+        en: {
+            headline: '魅力的な一行の価値提案',
+            why: 'このスキルが存在する理由とユーザーにどう役立つかの詳細説明...',
+            painPoints: [
+                {
+                    icon: '🔥',
+                    title: '問題のタイトル',
+                    desc: 'このスキルが解決する問題の説明。'
+                },
+                {
+                    icon: '🧠',
+                    title: '別の問題',
+                    desc: '別のペインポイントの説明。'
+                },
+                {
+                    icon: '💥',
+                    title: '3つ目の問題',
+                    desc: '3つ目の問題の説明。'
+                }
+            ]
+        },
+        'zh-CN': {
+            headline: '中文标题',
+            why: '中文说明...',
+            painPoints: [/* ... */]
+        },
+        ja: {
+            headline: '日本語タイトル',
+            why: '日本語説明...',
+            painPoints: [/* ... */]
+        }
+    }
+};
+```
+
+**レンダリング関数：**
+
+```javascript
+function renderMarketingSection(skillName) {
+    const marketing = SKILL_MARKETING[skillName];
+    if (!marketing) return '';
+
+    const content = marketing[currentLang] || marketing['en'];
+    // .marketing-section 構造の HTML を返す
+}
+```
+
+**CSS クラス：**
+- `.marketing-section` - グラデーション背景のコンテナ
+- `.marketing-title` - グラデーションテキストのヘッドライン
+- `.marketing-why` - 価値提案の段落
+- `.pain-points-grid` - レスポンシブ3カラムグリッド
+- `.pain-point-card` - アイコン、タイトル、説明を含むグラスカード
+
+**マーケティングコンテンツ作成ガイドライン：**
+1. ユーザーの視点で書く（「このスキル」ではなく「あなた」）
+2. まずペインポイントを示し、次に解決策を提示
+3. 具体的で共感できる例を使用（例：「ポート3000は既に使用中」）
+4. ヘッドラインは10語以内に
+5. ペインポイントのタイトルは解決策ではなく問題そのものを
+
+#### 7. 三カラムレイアウト
 
 ドキュメントサイトはレスポンシブ三カラムレイアウトを使用：
 
@@ -886,7 +959,7 @@ const CACHE_VERSION = Date.now();    // キャッシュバスティング用
 - タブレット：右サイドバー非表示
 - モバイル：両サイドバー非表示、モバイルメニュー表示
 
-#### 7. 右サイドバー - インストールセクション
+#### 8. 右サイドバー - インストールセクション
 
 右サイドバーはクイックインストール手順を提供：
 
@@ -936,7 +1009,7 @@ const I18N = {
 };
 ```
 
-#### 8. 目次生成 (Tocbot)
+#### 9. 目次生成 (Tocbot)
 
 Tocbot ライブラリを使用して見出しから目次を自動生成：
 
@@ -961,7 +1034,7 @@ tocbot.init({
 });
 ```
 
-#### 9. コード構文ハイライト (highlight.js)
+#### 10. コード構文ハイライト (highlight.js)
 
 highlight.js を使用してコードブロックの構文ハイライト：
 

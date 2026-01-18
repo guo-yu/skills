@@ -930,7 +930,80 @@ const BRANCH = 'master';                   // 或 'main'
 const CACHE_VERSION = Date.now();
 ```
 
-#### 6. 三栏布局
+#### 6. 营销展示区（为什么使用这个技能？）
+
+每个技能在文档内容上方显示一个引人注目的营销展示区，包含：
+- **标题**：一句话说明价值主张
+- **原因**：解释为什么用户应该使用这个技能
+- **痛点**：三张卡片展示该技能解决的问题
+
+**main.js 中的 SKILL_MARKETING 数据结构：**
+
+```javascript
+const SKILL_MARKETING = {
+    'skill-name': {
+        en: {
+            headline: '引人注目的一句话价值主张',
+            why: '详细解释这个技能存在的原因以及如何帮助用户...',
+            painPoints: [
+                {
+                    icon: '🔥',
+                    title: '问题标题',
+                    desc: '描述这个技能解决的问题。'
+                },
+                {
+                    icon: '🧠',
+                    title: '另一个问题',
+                    desc: '另一个痛点的描述。'
+                },
+                {
+                    icon: '💥',
+                    title: '第三个问题',
+                    desc: '第三个问题的描述。'
+                }
+            ]
+        },
+        'zh-CN': {
+            headline: '中文标题',
+            why: '中文说明...',
+            painPoints: [/* ... */]
+        },
+        ja: {
+            headline: '日本語タイトル',
+            why: '日本語説明...',
+            painPoints: [/* ... */]
+        }
+    }
+};
+```
+
+**渲染函数：**
+
+```javascript
+function renderMarketingSection(skillName) {
+    const marketing = SKILL_MARKETING[skillName];
+    if (!marketing) return '';
+
+    const content = marketing[currentLang] || marketing['en'];
+    // 返回包含 .marketing-section 结构的 HTML
+}
+```
+
+**CSS 类：**
+- `.marketing-section` - 带渐变背景的容器
+- `.marketing-title` - 渐变文字标题
+- `.marketing-why` - 价值主张段落
+- `.pain-points-grid` - 响应式三栏网格
+- `.pain-point-card` - 玻璃卡片，包含图标、标题、描述
+
+**营销内容撰写指南：**
+1. 从用户角度撰写（使用"你"而不是"这个技能"）
+2. 先展示痛点，再给出解决方案
+3. 使用具体、可共鸣的例子（如"端口 3000 已被占用"）
+4. 标题控制在 10 个字以内
+5. 痛点标题应该是问题本身，而不是解决方案
+
+#### 7. 三栏布局
 
 文档网站使用响应式三栏布局：
 
@@ -973,7 +1046,7 @@ const CACHE_VERSION = Date.now();
 - 平板端：隐藏右侧边栏
 - 移动端：隐藏两侧边栏，显示移动菜单
 
-#### 7. 右侧边栏 - 安装说明
+#### 8. 右侧边栏 - 安装说明
 
 右侧边栏提供快速安装指南：
 
@@ -1023,7 +1096,7 @@ const I18N = {
 };
 ```
 
-#### 8. 目录生成 (Tocbot)
+#### 9. 目录生成 (Tocbot)
 
 使用 Tocbot 库从标题自动生成目录：
 
@@ -1048,7 +1121,7 @@ tocbot.init({
 });
 ```
 
-#### 9. 代码语法高亮 (highlight.js)
+#### 10. 代码语法高亮 (highlight.js)
 
 使用 highlight.js 进行代码块语法高亮：
 

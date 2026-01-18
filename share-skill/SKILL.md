@@ -1008,7 +1008,80 @@ const BRANCH = 'master';                   // or 'main'
 const CACHE_VERSION = Date.now();
 ```
 
-#### 6. Three-Column Layout
+#### 6. Marketing Section (Why Use This Skill?)
+
+Each skill displays a compelling marketing section above the documentation content, highlighting:
+- **Headline**: A catchy one-liner explaining the value proposition
+- **Why**: A paragraph explaining why users should use this skill
+- **Pain Points**: Three cards showing problems the skill solves
+
+**SKILL_MARKETING Data Structure in main.js:**
+
+```javascript
+const SKILL_MARKETING = {
+    'skill-name': {
+        en: {
+            headline: 'Compelling one-liner value proposition',
+            why: 'Detailed explanation of why this skill exists and how it helps users...',
+            painPoints: [
+                {
+                    icon: '🔥',
+                    title: 'Problem Title',
+                    desc: 'Description of the problem this skill solves.'
+                },
+                {
+                    icon: '🧠',
+                    title: 'Another Problem',
+                    desc: 'Description of another pain point.'
+                },
+                {
+                    icon: '💥',
+                    title: 'Third Problem',
+                    desc: 'Description of the third issue addressed.'
+                }
+            ]
+        },
+        'zh-CN': {
+            headline: '中文标题',
+            why: '中文说明...',
+            painPoints: [/* ... */]
+        },
+        ja: {
+            headline: '日本語タイトル',
+            why: '日本語説明...',
+            painPoints: [/* ... */]
+        }
+    }
+};
+```
+
+**Render Function:**
+
+```javascript
+function renderMarketingSection(skillName) {
+    const marketing = SKILL_MARKETING[skillName];
+    if (!marketing) return '';
+
+    const content = marketing[currentLang] || marketing['en'];
+    // Returns HTML with .marketing-section structure
+}
+```
+
+**CSS Classes:**
+- `.marketing-section` - Container with gradient background
+- `.marketing-title` - Gradient text headline
+- `.marketing-why` - Value proposition paragraph
+- `.pain-points-grid` - 3-column responsive grid
+- `.pain-point-card` - Glass card with icon, title, description
+
+**Guidelines for Writing Marketing Content:**
+1. Write from the user's perspective ("You" not "This skill")
+2. Lead with the pain point, then show the solution
+3. Use specific, relatable examples (e.g., "Port 3000 is already in use")
+4. Keep headlines under 10 words
+5. Pain point titles should be the problem, not the solution
+
+#### 7. Three-Column Layout
 
 The documentation site uses a three-column responsive layout:
 
@@ -1051,7 +1124,7 @@ The documentation site uses a three-column responsive layout:
 - Tablet: Right sidebar hidden
 - Mobile: Both sidebars hidden, mobile menu available
 
-#### 7. Right Sidebar - Installation Section
+#### 8. Right Sidebar - Installation Section
 
 The right sidebar provides quick installation instructions:
 
@@ -1101,7 +1174,7 @@ const I18N = {
 };
 ```
 
-#### 8. Table of Contents (Tocbot)
+#### 9. Table of Contents (Tocbot)
 
 Use Tocbot library to auto-generate table of contents from headings:
 
@@ -1126,7 +1199,7 @@ tocbot.init({
 });
 ```
 
-#### 9. Code Syntax Highlighting (highlight.js)
+#### 10. Code Syntax Highlighting (highlight.js)
 
 Use highlight.js for code block syntax highlighting:
 

@@ -17,7 +17,9 @@ const I18N = {
         addMarketplace: 'Add marketplace',
         installSkills: 'Install skills',
         moreOptions: 'More installation options',
-        titleSuffix: "'s Skills"
+        titleSuffix: "'s Skills",
+        whyUseThis: 'Why Use This Skill?',
+        painPoints: 'Problems It Solves'
     },
     'zh-CN': {
         skills: '技能列表',
@@ -28,7 +30,9 @@ const I18N = {
         addMarketplace: '添加技能市场',
         installSkills: '安装技能',
         moreOptions: '更多安装选项',
-        titleSuffix: ' 的技能集'
+        titleSuffix: ' 的技能集',
+        whyUseThis: '为什么使用这个技能？',
+        painPoints: '它解决的问题'
     },
     ja: {
         skills: 'スキル',
@@ -39,7 +43,208 @@ const I18N = {
         addMarketplace: 'マーケットプレイスを追加',
         installSkills: 'スキルをインストール',
         moreOptions: 'その他のインストールオプション',
-        titleSuffix: ' のスキル'
+        titleSuffix: ' のスキル',
+        whyUseThis: 'なぜこのスキルを使うのか？',
+        painPoints: '解決する問題'
+    }
+};
+
+// Marketing content for each skill - compelling reasons to use
+const SKILL_MARKETING = {
+    'port-allocator': {
+        en: {
+            headline: 'Never fight with port conflicts again',
+            why: 'Every developer knows the frustration: you start your dev server and see "Port 3000 is already in use". You kill a process, break another project, and waste 10 minutes debugging. Port Allocator eliminates this chaos by giving each project its own dedicated port range.',
+            painPoints: [
+                {
+                    icon: '🔥',
+                    title: '"Port 3000 is already in use"',
+                    desc: 'The most common error message in development. Stop guessing which process to kill.'
+                },
+                {
+                    icon: '🧠',
+                    title: 'Mental overhead of port management',
+                    desc: 'No more remembering "was project A on 3000 or 3001?" Each project gets a predictable port range.'
+                },
+                {
+                    icon: '💥',
+                    title: 'Accidentally killing other projects',
+                    desc: 'Running `pkill node` nukes everything. This skill ensures you only touch your current project\'s ports.'
+                }
+            ]
+        },
+        'zh-CN': {
+            headline: '告别端口冲突的烦恼',
+            why: '每个开发者都经历过这种挫败感：启动开发服务器时看到"端口 3000 已被占用"。你杀掉一个进程，结果破坏了另一个项目，浪费 10 分钟调试。Port Allocator 通过为每个项目分配专属端口范围，彻底消除这种混乱。',
+            painPoints: [
+                {
+                    icon: '🔥',
+                    title: '"端口 3000 已被占用"',
+                    desc: '开发中最常见的错误信息。不用再猜测该杀掉哪个进程。'
+                },
+                {
+                    icon: '🧠',
+                    title: '端口管理的心智负担',
+                    desc: '不用再记忆"项目 A 是 3000 还是 3001？"每个项目都有可预测的端口范围。'
+                },
+                {
+                    icon: '💥',
+                    title: '误杀其他项目',
+                    desc: '执行 `pkill node` 会杀死所有进程。这个技能确保你只操作当前项目的端口。'
+                }
+            ]
+        },
+        ja: {
+            headline: 'ポート競合との戦いを終わらせる',
+            why: 'すべての開発者が経験するフラストレーション：開発サーバーを起動すると「ポート3000は既に使用中」と表示される。プロセスを終了させると別のプロジェクトが壊れ、デバッグに10分を無駄にする。Port Allocatorは各プロジェクトに専用のポート範囲を割り当て、この混乱を解消します。',
+            painPoints: [
+                {
+                    icon: '🔥',
+                    title: '「ポート3000は既に使用中」',
+                    desc: '開発で最も一般的なエラーメッセージ。どのプロセスを終了すべきか推測する必要がなくなります。'
+                },
+                {
+                    icon: '🧠',
+                    title: 'ポート管理の認知負荷',
+                    desc: '「プロジェクトAは3000？3001？」と覚える必要はありません。各プロジェクトに予測可能なポート範囲。'
+                },
+                {
+                    icon: '💥',
+                    title: '他のプロジェクトを誤って終了',
+                    desc: '`pkill node`は全てを終了させます。このスキルは現在のプロジェクトのポートのみを操作することを保証。'
+                }
+            ]
+        }
+    },
+    'share-skill': {
+        en: {
+            headline: 'Transform local AI tools into shareable, versioned assets',
+            why: 'Your custom Claude skills are powerful—but they\'re trapped in ~/.claude/skills with no backup, no version control, and no way to share. One machine failure and they\'re gone. Share Skill migrates your skills to a proper Git repository with documentation, making them discoverable and shareable.',
+            painPoints: [
+                {
+                    icon: '💾',
+                    title: 'Skills stuck without backup',
+                    desc: 'Local skills in ~/.claude have no version history. One accidental delete or machine failure loses everything.'
+                },
+                {
+                    icon: '🤝',
+                    title: 'Can\'t collaborate or share',
+                    desc: 'Your team could benefit from your skills, but there\'s no easy way to distribute them.'
+                },
+                {
+                    icon: '🔍',
+                    title: 'No discovery mechanism',
+                    desc: 'Skills hidden in local folders with no documentation. This creates a beautiful docs site automatically.'
+                }
+            ]
+        },
+        'zh-CN': {
+            headline: '将本地 AI 工具转化为可分享、版本化的资产',
+            why: '你的自定义 Claude 技能非常强大——但它们被困在 ~/.claude/skills 中，没有备份、没有版本控制、无法分享。一次机器故障就会全部丢失。Share Skill 将你的技能迁移到正规的 Git 仓库，并配有文档，使它们可被发现和分享。',
+            painPoints: [
+                {
+                    icon: '💾',
+                    title: '技能没有备份',
+                    desc: '~/.claude 中的本地技能没有版本历史。一次误删或机器故障就会丢失一切。'
+                },
+                {
+                    icon: '🤝',
+                    title: '无法协作或分享',
+                    desc: '你的团队可以从你的技能中受益，但没有简单的方式来分发它们。'
+                },
+                {
+                    icon: '🔍',
+                    title: '没有发现机制',
+                    desc: '技能隐藏在本地文件夹中，没有文档。这个技能会自动创建精美的文档站点。'
+                }
+            ]
+        },
+        ja: {
+            headline: 'ローカルAIツールを共有可能なバージョン管理資産に変換',
+            why: 'カスタムClaudeスキルは強力ですが、~/.claude/skillsに閉じ込められ、バックアップも、バージョン管理も、共有方法もありません。マシン障害で全て失われます。Share Skillはスキルをドキュメント付きの適切なGitリポジトリに移行し、発見可能で共有可能にします。',
+            painPoints: [
+                {
+                    icon: '💾',
+                    title: 'バックアップのないスキル',
+                    desc: '~/.claudeのローカルスキルにはバージョン履歴がありません。誤削除やマシン障害で全て失われます。'
+                },
+                {
+                    icon: '🤝',
+                    title: 'コラボレーション・共有ができない',
+                    desc: 'チームがあなたのスキルから恩恵を受けられるのに、配布する簡単な方法がありません。'
+                },
+                {
+                    icon: '🔍',
+                    title: '発見メカニズムがない',
+                    desc: 'スキルがドキュメントなしでローカルフォルダに隠れています。美しいドキュメントサイトを自動作成します。'
+                }
+            ]
+        }
+    },
+    'skill-permissions': {
+        en: {
+            headline: 'One command to authorize, zero interruptions while coding',
+            why: 'Every time you use a skill, Claude asks "Allow this command?" You click allow, lose focus, and break your flow—dozens of times per session. Skill Permissions analyzes what a skill needs upfront and generates a single command to authorize everything at once.',
+            painPoints: [
+                {
+                    icon: '⏸️',
+                    title: 'Constant permission prompts',
+                    desc: '"Allow Bash(git...)?" "Allow Bash(ls...)?" Every prompt breaks your concentration and workflow.'
+                },
+                {
+                    icon: '❓',
+                    title: 'Unknown permission requirements',
+                    desc: 'You don\'t know what commands a skill will run until it asks. This analyzes everything upfront.'
+                },
+                {
+                    icon: '⚙️',
+                    title: 'Tedious manual configuration',
+                    desc: 'Manually editing settings.json to add allowedCommands is error-prone and time-consuming.'
+                }
+            ]
+        },
+        'zh-CN': {
+            headline: '一条命令授权，编码零打扰',
+            why: '每次使用技能时，Claude 都会问"允许这个命令吗？"你点击允许，失去焦点，打断工作流——每个会话数十次。Skill Permissions 预先分析技能需要什么，并生成一条命令一次性授权所有权限。',
+            painPoints: [
+                {
+                    icon: '⏸️',
+                    title: '不断的权限提示',
+                    desc: '"允许 Bash(git...)？""允许 Bash(ls...)？"每次提示都会打断你的专注和工作流。'
+                },
+                {
+                    icon: '❓',
+                    title: '未知的权限需求',
+                    desc: '你不知道技能会运行什么命令，直到它询问。这个技能会预先分析所有内容。'
+                },
+                {
+                    icon: '⚙️',
+                    title: '繁琐的手动配置',
+                    desc: '手动编辑 settings.json 添加 allowedCommands 容易出错且耗时。'
+                }
+            ]
+        },
+        ja: {
+            headline: '1つのコマンドで認証、コーディング中の中断ゼロ',
+            why: 'スキルを使うたびに、Claudeは「このコマンドを許可しますか？」と尋ねます。許可をクリックし、集中を失い、フローが途切れる—セッションごとに数十回。Skill Permissionsはスキルが必要とするものを事前に分析し、全てを一度に認証する単一のコマンドを生成します。',
+            painPoints: [
+                {
+                    icon: '⏸️',
+                    title: '絶え間ない許可プロンプト',
+                    desc: '「Bash(git...)を許可？」「Bash(ls...)を許可？」毎回のプロンプトが集中とワークフローを中断。'
+                },
+                {
+                    icon: '❓',
+                    title: '未知の権限要件',
+                    desc: 'スキルがどのコマンドを実行するか、尋ねられるまで分かりません。事前に全てを分析します。'
+                },
+                {
+                    icon: '⚙️',
+                    title: '面倒な手動設定',
+                    desc: 'settings.jsonを手動で編集してallowedCommandsを追加するのはエラーが起きやすく時間がかかります。'
+                }
+            ]
+        }
     }
 };
 
@@ -196,6 +401,44 @@ marked.setOptions({
     gfm: true
 });
 
+// Render marketing section for a skill
+function renderMarketingSection(skillName) {
+    const marketing = SKILL_MARKETING[skillName];
+    if (!marketing) return '';
+
+    const content = marketing[currentLang] || marketing['en'];
+    if (!content) return '';
+
+    const t = I18N[currentLang];
+
+    const painPointsHtml = content.painPoints.map(point => `
+        <div class="pain-point-card">
+            <div class="pain-point-icon">${point.icon}</div>
+            <div class="pain-point-content">
+                <h4 class="pain-point-title">${point.title}</h4>
+                <p class="pain-point-desc">${point.desc}</p>
+            </div>
+        </div>
+    `).join('');
+
+    return `
+        <div class="marketing-section">
+            <div class="marketing-headline">
+                <h2 class="marketing-title">${content.headline}</h2>
+            </div>
+            <div class="marketing-why">
+                <p>${content.why}</p>
+            </div>
+            <div class="marketing-pain-points">
+                <h3 class="pain-points-title">${t.painPoints}</h3>
+                <div class="pain-points-grid">
+                    ${painPointsHtml}
+                </div>
+            </div>
+        </div>
+    `;
+}
+
 // Post-process HTML to add IDs to headings
 function addHeadingIds(html) {
     return html.replace(/<h([1-6])>(.*?)<\/h[1-6]>/gi, (match, level, text) => {
@@ -288,7 +531,10 @@ async function loadDocumentation(skillName) {
         // Parse and render
         let html = marked.parse(markdown);
         html = addHeadingIds(html);
-        document.getElementById('content').innerHTML = html;
+
+        // Add marketing section before the main content
+        const marketingHtml = renderMarketingSection(skillName);
+        document.getElementById('content').innerHTML = marketingHtml + html;
 
         // Update page title
         const user = await fetchUserInfo();
