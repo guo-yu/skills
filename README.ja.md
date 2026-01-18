@@ -85,4 +85,4 @@ MIT
 
 ---
 
-Made with ♥ by [Yu's skills](https://github.com/guo-yu/skills)
+Made with ♥ by [Yu's skills](https://skill.guoyu.me/)

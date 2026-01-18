@@ -387,7 +387,7 @@ body {
 }
 
 .main-container.three-column {
-    --sidebar-right-width: 280px;
+    --sidebar-right-width: 320px;
 }
 
 /* Left Sidebar */
@@ -428,20 +428,29 @@ body {
     overflow-x: auto;
 }
 
-.sidebar-right .install-code code {
-    display: block;
-    font-family: var(--font-mono);
-    font-size: 0.75rem;
-    line-height: 1.8;
-    color: var(--color-text-muted);
-    white-space: nowrap;
+.sidebar-right .install-code pre {
+    margin: 0;
+    padding: 0;
+    background: transparent;
+    border: none;
 }
 
-.sidebar-right .install-code code:nth-child(2),
-.sidebar-right .install-code code:nth-child(5),
-.sidebar-right .install-code code:nth-child(6),
-.sidebar-right .install-code code:nth-child(7) {
+.sidebar-right .install-code code {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    line-height: 1.7;
+    color: var(--color-text-muted);
+    white-space: pre-wrap;
+    word-break: break-all;
+}
+
+.sidebar-right .install-code .cmd {
     color: var(--color-primary-light);
+}
+
+.sidebar-right .install-code .comment {
+    color: var(--color-text-muted);
+    opacity: 0.7;
 }
 
 .sidebar-right .install-link {

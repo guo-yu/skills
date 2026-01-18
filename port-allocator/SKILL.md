@@ -1,56 +1,56 @@
 ---
 name: port-allocator
-description: 自动分配端口、自动分配和管理开发服务器端口，避免多个 Claude Code 实例之间的端口冲突
+description: Automatically allocate and manage development server ports, avoiding port conflicts between multiple Claude Code instances
 ---
 
 # Port Allocator
 
-智能端口分配器，只为包含 `package.json` 的真实项目分配端口。
+Smart port allocator that only assigns ports to real projects containing `package.json`.
 
-## 使用方法
+## Usage
 
-| 命令 | 说明 |
-|------|------|
-| `/port-allocator` | 为当前项目分配/查询端口 |
-| `/port-allocator list` | 列出所有已分配的端口 |
-| `/port-allocator scan` | 扫描代码目录，发现新项目并分配端口 |
-| `/port-allocator config <path>` | 设置代码主目录路径 |
-| `/port-allocator add <目录路径>` | 手动添加项目的端口分配 |
-| `/port-allocator allow` | 配置 Claude Code 权限，允许本 skill 的常用命令 |
+| Command | Description |
+|---------|-------------|
+| `/port-allocator` | Allocate/query port for current project |
+| `/port-allocator list` | List all allocated ports |
+| `/port-allocator scan` | Scan code directory, discover and allocate ports for new projects |
+| `/port-allocator config <path>` | Set the main code directory path |
+| `/port-allocator add <dir-path>` | Manually add port allocation for a project |
+| `/port-allocator allow` | Configure Claude Code permissions for this skill's commands |
 
-## ⚠️ 重要规则
+## Important Rules
 
-### 1. 服务重启时只操作本项目端口
+### 1. Only Operate on Current Project's Ports When Restarting Services
 
-当需要重启开发服务器时，**只能杀掉当前项目端口范围内的进程**，绝不能影响其他端口：
+When restarting the development server, **only kill processes within the current project's port range**, never affect other ports:
 
 ```bash
-# ✅ 正确：只杀当前项目端口 (例如 3000-3009)
+# Correct: Only kill current project ports (e.g., 3000-3009)
 lsof -ti:3000 | xargs kill -9 2>/dev/null
 lsof -ti:3001 | xargs kill -9 2>/dev/null
 
-# ❌ 错误：杀掉所有 node 进程或其他端口
-pkill -f node  # 会影响其他项目！
-lsof -ti:3010 | xargs kill  # 这是其他项目的端口！
+# Wrong: Kill all node processes or other ports
+pkill -f node  # Will affect other projects!
+lsof -ti:3010 | xargs kill  # This is another project's port!
 ```
 
-### 2. 更新 CLAUDE.md 时追加而非覆盖
+### 2. Append Rather Than Overwrite When Updating CLAUDE.md
 
-更新 `~/.claude/CLAUDE.md` 时，**必须保留用户原有内容**：
+When updating `~/.claude/CLAUDE.md`, **must preserve the user's existing content**:
 
 ```bash
-# ✅ 正确：检查并追加或更新特定章节
-# ❌ 错误：直接覆盖整个文件
+# Correct: Check and append or update specific sections
+# Wrong: Directly overwrite the entire file
 ```
 
-## 执行步骤
+## Execution Steps
 
-### 命令: `/port-allocator allow`
+### Command: `/port-allocator allow`
 
-配置 Claude Code 允许本 skill 执行的命令，避免每次都要手动确认：
+Configure Claude Code to allow commands used by this skill, avoiding manual confirmation each time:
 
-1. 读取 `~/.claude/settings.json`（如果存在）
-2. 合并以下命令到 `permissions.allow` 数组（保留现有配置）：
+1. Read `~/.claude/settings.json` (if exists)
+2. Merge the following commands into `permissions.allow` array (preserve existing config):
 
 ```json
 {
@@ -67,40 +67,82 @@ lsof -ti:3010 | xargs kill  # 这是其他项目的端口！
 }
 ```
 
-3. 写入更新后的 settings.json
-4. 输出已添加的权限列表
+3. Write updated settings.json
+4. Output the list of added permissions
 
-**输出格式：**
+**Output Format:**
 ```
-✅ 已配置 Claude Code 权限
+Configured Claude Code permissions
 
-新增允许的命令模式：
+Added allowed command patterns:
   - Bash(ls -d *)
   - Bash(find * -maxdepth * -name package.json *)
   - Bash(cat ~/.claude/*)
   - Bash(lsof -i:3*)
   - Bash(lsof -ti:3*)
 
-配置文件: ~/.claude/settings.json
+Config file: ~/.claude/settings.json
 ```
 
-### 命令: `/port-allocator config <path>`
+### Command: `/port-allocator config <path>`
 
-设置用户的代码主目录：
+Set the user's main code directory:
 
-1. **验证路径是否存在**（必须！不存在则报错并退出）
-2. 更新 `~/.claude/port-registry.json` 中的 `code_root` 字段
-3. 输出确认信息
+1. **Verify path exists** (required! Error and exit if not found)
+2. Update `code_root` field in `~/.claude/port-registry.json`
+3. Output confirmation
 
-### 命令: `/port-allocator scan`
+### First Run: Auto-Detection
 
-扫描代码目录，自动发现并注册项目：
-
-1. 读取 `~/.claude/port-registry.json` 获取 `code_root`（默认 `~/Codes`）
-2. 查找所有包含 `package.json` 的目录（精确到 package.json 所在位置）：
+On first run (when `~/.claude/port-registry.json` doesn't exist or has no `code_root`), automatically detect the code directory:
 
 ```bash
-# 查找所有 package.json，排除构建产物目录
+# Check common code directories
+for dir in ~/Codes ~/Code ~/Projects ~/Dev ~/Development ~/repos; do
+  if [ -d "$dir" ]; then
+    CODE_ROOT="$dir"
+    break
+  fi
+done
+
+# If none exist, default to ~/Codes
+CODE_ROOT="${CODE_ROOT:-~/Codes}"
+```
+
+**Auto-detection output:**
+```
+First run, detecting code directory...
+
+Code directory detected: ~/Codes
+
+Port registry initialized: ~/.claude/port-registry.json
+
+To change, use:
+   /port-allocator config ~/your/code/path
+```
+
+**If no directory found:**
+```
+Could not auto-detect code directory.
+
+Please configure manually:
+   /port-allocator config ~/your/code/path
+
+Common locations:
+   ~/Codes, ~/Code, ~/Projects, ~/Dev
+```
+
+### Command: `/port-allocator scan`
+
+Scan code directory, automatically discover and register projects:
+
+1. Read `~/.claude/port-registry.json` to get `code_root`
+   - If config doesn't exist, run auto-detection first
+   - If `code_root` directory doesn't exist, prompt user to configure
+2. Find all directories containing `package.json` (exact to package.json location):
+
+```bash
+# Find all package.json, exclude build artifact directories
 find <code_root> -maxdepth 3 -name "package.json" -type f \
   -not -path "*/.next/*" \
   -not -path "*/node_modules/*" \
@@ -110,81 +152,81 @@ find <code_root> -maxdepth 3 -name "package.json" -type f \
 done
 ```
 
-3. **重要**：路径必须精确到 `package.json` 所在目录
-   - ✅ 正确：`~/Codes/chekusu/landing`
-   - ❌ 错误：`~/Codes/chekusu`（如果 package.json 在子目录）
+3. **Important**: Path must be exact to the directory containing `package.json`
+   - Correct: `~/Codes/chekusu/landing`
+   - Wrong: `~/Codes/chekusu` (if package.json is in subdirectory)
 
-4. 对于每个发现的项目目录：
-   - 检查是否已在注册表中
-   - 如果不存在，分配下一个可用端口段
-5. 更新配置文件（**追加模式**，不覆盖用户内容）
-6. 输出扫描结果摘要
+4. For each discovered project directory:
+   - Check if already in registry
+   - If not, allocate next available port range
+5. Update config file (**append mode**, don't overwrite user content)
+6. Output scan result summary
 
-### 命令: `/port-allocator` (默认)
+### Command: `/port-allocator` (default)
 
-为当前项目分配/查询端口：
+Allocate/query port for current project:
 
-1. 获取当前工作目录
-2. 读取配置获取 `code_root` 和已分配端口
-3. 匹配当前目录对应的项目
-4. 如果没有 `package.json`，提示这不是需要端口的项目
-5. 如果有，检查是否已分配端口，未分配则自动分配
-6. 输出端口信息
+1. Get current working directory
+2. Read config to get `code_root` and allocated ports
+3. Match current directory to corresponding project
+4. If no `package.json`, indicate this is not a project needing ports
+5. If exists, check if port already allocated, auto-allocate if not
+6. Output port info
 
-### 命令: `/port-allocator list`
+### Command: `/port-allocator list`
 
-列出所有已分配的端口（只读操作）。
+List all allocated ports (read-only operation).
 
-## 输出格式
+## Output Format
 
-### 端口信息
+### Port Information
 ```
-📦 项目目录: ~/Codes/chekusu/landing
-📄 package.json: ✓ 已检测到
-🔌 端口范围: 3000-3009
-   - 主应用: 3000
+Project directory: ~/Codes/chekusu/landing
+package.json: Detected
+Port range: 3000-3009
+   - Main app: 3000
    - API: 3001
-   - 其他服务: 3002-3009
+   - Other services: 3002-3009
 
-⚠️ 重启服务时只能操作 3000-3009 端口！
+Warning: Only operate on ports 3000-3009 when restarting services!
 ```
 
-### 扫描结果
+### Scan Results
 ```
-🔍 扫描完成: ~/Codes
+Scan complete: ~/Codes
 
-✅ 已注册项目 (N个):
+Registered projects (N):
    - chekusu/landing: 3000-3009
    - saifuri: 3010-3019
 
-🆕 新发现项目 (M个):
-   - new-project: 3090-3099 (新分配)
+Newly discovered projects (M):
+   - new-project: 3090-3099 (newly allocated)
 
-⏭️ 跳过 (K个):
-   - .next, node_modules (构建产物)
-   - research-folder (无 package.json)
+Skipped (K):
+   - .next, node_modules (build artifacts)
+   - research-folder (no package.json)
 ```
 
-## 端口分配规则
+## Port Allocation Rules
 
-- 每个项目分配 **10 个连续端口**
-- 起始端口：3000
-- 间隔：10
-- `x0`: 主应用（如 3000, 3010, 3020）
-- `x1`: API 服务（如 3001, 3011, 3021）
-- `x2-x9`: 其他服务（数据库、缓存等）
+- Each project is allocated **10 consecutive ports**
+- Starting port: 3000
+- Interval: 10
+- `x0`: Main application (e.g., 3000, 3010, 3020)
+- `x1`: API service (e.g., 3001, 3011, 3021)
+- `x2-x9`: Other services (database, cache, etc.)
 
-## 配置文件
+## Configuration Files
 
-- **端口注册表**: `~/.claude/port-registry.json`
-- **全局说明**: `~/.claude/CLAUDE.md`（追加模式更新）
-- **Claude Code 设置**: `~/.claude/settings.json`（存放 allowedCommands）
-- **跳过模式**: `.next`, `node_modules`, `dist`, `build`
+- **Port registry**: `~/.claude/port-registry.json`
+- **Global instructions**: `~/.claude/CLAUDE.md` (append mode updates)
+- **Claude Code settings**: `~/.claude/settings.json` (stores allowedCommands)
+- **Skip patterns**: `.next`, `node_modules`, `dist`, `build`
 
-## 注意事项
+## Notes
 
-1. **只操作本项目端口** - 重启服务时绝不影响其他项目
-2. **追加而非覆盖** - 更新配置文件时保留用户原有内容
-3. **路径精确** - 指向 package.json 实际所在目录
-4. **跳过构建产物** - .next、node_modules 等不分配端口
-5. **首次使用** - 建议先运行 `/port-allocator allow` 配置权限
+1. **Only operate on project ports** - Never affect other projects when restarting services
+2. **Append not overwrite** - Preserve user's existing content when updating config files
+3. **Precise paths** - Point to actual directory containing package.json
+4. **Skip build artifacts** - .next, node_modules, etc. don't get port allocation
+5. **First use** - Recommend running `/port-allocator allow` to configure permissions first

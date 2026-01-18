@@ -3,6 +3,9 @@ const REPO_OWNER = 'guo-yu';
 const REPO_NAME = 'skills';
 const BRANCH = 'master';
 
+// Cache busting version (update this when content changes)
+const CACHE_VERSION = Date.now();
+
 // i18n translations
 const I18N = {
     en: {
@@ -69,15 +72,20 @@ let currentLang = localStorage.getItem('docs-lang') || 'en';
 let userInfo = null;
 
 // Detect if running on GitHub Pages or locally
-function getBasePath(skillName) {
+function getBasePath(skillName, lang = 'en') {
     const isGitHubPages = window.location.hostname.includes('github.io') ||
                           window.location.hostname === 'skill.guoyu.me' ||
                           window.location.hostname === 'guoyu.me';
 
+    // Determine file name based on language
+    const fileName = lang === 'en' ? 'SKILL.md' : `SKILL.${lang}.md`;
+
     if (isGitHubPages) {
-        return `https://raw.githubusercontent.com/${REPO_OWNER}/${REPO_NAME}/${BRANCH}/${skillName}/SKILL.md`;
+        // Add cache busting for GitHub raw content
+        return `https://raw.githubusercontent.com/${REPO_OWNER}/${REPO_NAME}/${BRANCH}/${skillName}/${fileName}?v=${CACHE_VERSION}`;
     } else {
-        return `../${skillName}/SKILL.md`;
+        // Add cache busting for local development
+        return `../${skillName}/${fileName}?v=${CACHE_VERSION}`;
     }
 }
 
@@ -122,6 +130,18 @@ async function updateBrandTitle() {
         avatar.alt = displayName;
     }
 
+    // Update favicon to user's avatar
+    const favicon = document.getElementById('favicon');
+    if (favicon) {
+        favicon.href = user.avatar_url;
+    }
+
+    // Update repo link
+    const repoLink = document.getElementById('repoLink');
+    if (repoLink) {
+        repoLink.href = `https://github.com/${REPO_OWNER}/${REPO_NAME}`;
+    }
+
     // Update page title
     document.title = `${displayName}${suffix}`;
 }
@@ -154,6 +174,10 @@ function setLanguage(lang) {
     currentLang = lang;
     localStorage.setItem('docs-lang', lang);
     applyI18n();
+
+    // Reload documentation with new language
+    const skillName = getCurrentSkill();
+    loadDocumentation(skillName);
 }
 
 // Setup language switcher
@@ -225,8 +249,12 @@ async function loadDocumentation(skillName) {
         return;
     }
 
-    const skillPath = getBasePath(skillName);
+    // Try loading language-specific file first, fallback to English
+    let skillPath = getBasePath(skillName, currentLang);
+    let fallbackToEnglish = false;
+
     console.log('Loading skill:', skillName);
+    console.log('Language:', currentLang);
     console.log('Path:', skillPath);
 
     try {
@@ -237,8 +265,16 @@ async function loadDocumentation(skillName) {
                 <p>${loadingText}</p>
             </div>`;
 
-        const response = await fetch(skillPath);
+        let response = await fetch(skillPath);
         console.log('Response status:', response.status);
+
+        // If language-specific file not found, fallback to English
+        if (!response.ok && currentLang !== 'en') {
+            console.log('Language-specific file not found, falling back to English');
+            skillPath = getBasePath(skillName, 'en');
+            response = await fetch(skillPath);
+            fallbackToEnglish = true;
+        }
 
         if (!response.ok) {
             throw new Error(`Failed to load: ${response.status}`);

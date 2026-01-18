@@ -5,6 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Skills</title>
 
+    <!-- Favicon (dynamically set to GitHub avatar) -->
+    <link rel="icon" id="favicon" type="image/png" href="">
+
     <!-- Google Fonts: Space Grotesk + DM Sans -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -17,7 +20,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.32.2/tocbot.min.css">
 
     <!-- Custom styles -->
-    <link rel="stylesheet" href="css/custom.css?v=4">
+    <link rel="stylesheet" href="css/custom.css?v=5">
 </head>
 <body>
     <!-- Animated Background -->
@@ -31,7 +34,7 @@
     <!-- Navigation -->
     <nav class="navbar glass">
         <div class="navbar-container">
-            <a class="navbar-brand" href="#">
+            <a class="navbar-brand" id="repoLink" href="https://github.com/guo-yu/skills" target="_blank">
                 <img class="brand-avatar" id="userAvatar" src="" alt="Avatar">
                 <span class="brand-text" id="brandTitle">Skills</span>
             </a>
@@ -168,13 +171,13 @@
                     <h4 class="sidebar-heading" data-i18n="installation">Installation</h4>
                     <p class="install-desc" data-i18n="installDesc">The easiest way to install:</p>
                     <div class="install-code">
-                        <code># <span data-i18n="addMarketplace">Add marketplace</span></code>
-                        <code>/plugin marketplace add guo-yu/skills</code>
-                        <code></code>
-                        <code># <span data-i18n="installSkills">Install skills</span></code>
-                        <code>/plugin install port-allocator@guo-yu-skills</code>
-                        <code>/plugin install share-skill@guo-yu-skills</code>
-                        <code>/plugin install skill-permissions@guo-yu-skills</code>
+                        <pre><code><span class="comment"># <span data-i18n="addMarketplace">Add marketplace</span></span>
+<span class="cmd">/plugin marketplace add guo-yu/skills</span>
+
+<span class="comment"># <span data-i18n="installSkills">Install skills</span></span>
+<span class="cmd">/plugin install port-allocator@guo-yu-skills</span>
+<span class="cmd">/plugin install share-skill@guo-yu-skills</span>
+<span class="cmd">/plugin install skill-permissions@guo-yu-skills</span></code></pre>
                     </div>
                     <a class="install-link" href="https://github.com/guo-yu/skills#installation" target="_blank" data-i18n="moreOptions">More installation options</a>
                 </div>
@@ -185,7 +188,7 @@
     <!-- Footer -->
     <footer class="footer">
         <div class="footer-content">
-            <p>Made with <span class="heart">♥</span> by <a href="https://github.com/guo-yu/skills/tree/master/share-skill">Yu's skills</a></p>
+            <p>Made with <span class="heart">♥</span> by <a href="https://skill.guoyu.me/">Yu's skills</a></p>
         </div>
     </footer>
 
@@ -193,6 +196,6 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.32.2/tocbot.min.js"></script>
-    <script src="js/main.js?v=4"></script>
+    <script src="js/main.js?v=5"></script>
 </body>
 </html>
