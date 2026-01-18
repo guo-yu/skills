@@ -5,100 +5,130 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Claude Code Skills</title>
 
-    <!-- Bootstrap 5 CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Google Fonts: Playfair Display + Source Sans 3 -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Source+Sans+3:wght@300;400;500;600&display=swap" rel="stylesheet">
 
     <!-- Highlight.js CSS -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css" id="hljs-theme">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css" id="hljs-theme">
 
     <!-- Tocbot CSS -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.32.2/tocbot.min.css">
 
     <!-- Custom styles -->
     <link rel="stylesheet" href="css/custom.css">
-
-    <script>
-        // Dark/Light mode on load
-        const savedTheme = localStorage.getItem('theme');
-        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-        if (savedTheme === 'light' || (!savedTheme && !prefersDark)) {
-            document.documentElement.setAttribute('data-bs-theme', 'light');
-        } else {
-            document.documentElement.setAttribute('data-bs-theme', 'dark');
-        }
-    </script>
 </head>
 <body>
+    <!-- Paper Grain Texture Overlay -->
+    <div class="paper-texture"></div>
+
     <!-- Navigation -->
-    <nav class="navbar navbar-expand-lg sticky-top">
-        <div class="container-fluid">
+    <nav class="navbar">
+        <div class="navbar-container">
             <a class="navbar-brand" href="#">
-                <strong>Claude Code Skills</strong>
+                <span class="brand-icon">✦</span>
+                <span class="brand-text">Claude Code <em>Skills</em></span>
             </a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                <span class="navbar-toggler-icon"></span>
+
+            <button class="mobile-menu-btn" onclick="toggleMobileMenu()" aria-label="Toggle menu">
+                <span></span>
+                <span></span>
+                <span></span>
             </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav me-auto">
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
-                            Skills
-                        </a>
-                        <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="?skill=port-allocator">port-allocator</a></li>
-                            <li><a class="dropdown-item" href="?skill=share-skill">share-skill</a></li>
-                            <li><a class="dropdown-item" href="?skill=skill-permissions">skill-permissions</a></li>
-                        </ul>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="https://github.com/guo-yu/skills" target="_blank">GitHub</a>
-                    </li>
-                </ul>
-                <button class="btn btn-outline-secondary btn-sm" onclick="toggleTheme()" id="themeToggle">
-                    <span id="themeIcon">🌙</span>
-                </button>
+
+            <div class="navbar-links" id="navbarLinks">
+                <div class="nav-dropdown">
+                    <button class="nav-dropdown-btn">
+                        Skills
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polyline points="6 9 12 15 18 9"></polyline>
+                        </svg>
+                    </button>
+                    <div class="nav-dropdown-content">
+                        <a href="?skill=port-allocator">port-allocator</a>
+                        <a href="?skill=share-skill">share-skill</a>
+                        <a href="?skill=skill-permissions">skill-permissions</a>
+                    </div>
+                </div>
+                <a class="nav-link" href="https://github.com/guo-yu/skills" target="_blank">
+                    GitHub
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                        <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+                        <polyline points="15 3 21 3 21 9"></polyline>
+                        <line x1="10" y1="14" x2="21" y2="3"></line>
+                    </svg>
+                </a>
             </div>
         </div>
     </nav>
 
-    <!-- Main Content -->
-    <div class="container-fluid main-container">
-        <div class="row">
-            <!-- Sidebar: Skills List or TOC -->
-            <nav class="col-md-3 col-lg-2 d-none d-md-block sidebar">
-                <div class="sidebar-content">
-                    <div id="skills-list" class="mb-4">
-                        <h6 class="sidebar-heading">Skills</h6>
-                        <ul class="nav flex-column">
-                            <li class="nav-item">
-                                <a class="nav-link" href="?skill=port-allocator">port-allocator</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="?skill=share-skill">share-skill</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="?skill=skill-permissions">skill-permissions</a>
-                            </li>
-                        </ul>
-                    </div>
-                    <div id="toc-container">
-                        <h6 class="sidebar-heading">Table of Contents</h6>
-                        <div class="js-toc"></div>
-                    </div>
-                </div>
-            </nav>
-
-            <!-- Documentation Content -->
-            <main class="col-md-9 col-lg-10 ms-sm-auto px-md-4 py-4">
-                <div class="js-toc-content" id="content">
-                    <div class="loading">Loading documentation...</div>
-                </div>
-            </main>
+    <!-- Mobile Menu -->
+    <div class="mobile-menu" id="mobileMenu">
+        <div class="mobile-menu-content">
+            <h3>Skills</h3>
+            <a href="?skill=port-allocator">port-allocator</a>
+            <a href="?skill=share-skill">share-skill</a>
+            <a href="?skill=skill-permissions">skill-permissions</a>
+            <div class="mobile-menu-divider"></div>
+            <a href="https://github.com/guo-yu/skills" target="_blank">GitHub</a>
         </div>
     </div>
 
+    <!-- Main Content -->
+    <div class="main-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-content">
+                <div class="sidebar-section">
+                    <h4 class="sidebar-heading">Skills</h4>
+                    <nav class="sidebar-nav">
+                        <a class="sidebar-link" href="?skill=port-allocator">
+                            <span class="sidebar-link-icon">⚡</span>
+                            port-allocator
+                        </a>
+                        <a class="sidebar-link" href="?skill=share-skill">
+                            <span class="sidebar-link-icon">🔗</span>
+                            share-skill
+                        </a>
+                        <a class="sidebar-link" href="?skill=skill-permissions">
+                            <span class="sidebar-link-icon">🔐</span>
+                            skill-permissions
+                        </a>
+                    </nav>
+                </div>
+
+                <div class="sidebar-section">
+                    <h4 class="sidebar-heading">On This Page</h4>
+                    <div class="js-toc"></div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Documentation Content -->
+        <main class="main-content">
+            <article class="js-toc-content content-card" id="content">
+                <div class="loading">
+                    <div class="loading-spinner"></div>
+                    <p>Loading documentation...</p>
+                </div>
+            </article>
+        </main>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <p>Made with <span class="heart">♥</span> for Claude Code</p>
+            <p class="footer-links">
+                <a href="https://github.com/guo-yu/skills">GitHub</a>
+                <span class="separator">·</span>
+                <a href="https://claude.ai">Claude</a>
+            </p>
+        </div>
+    </footer>
+
     <!-- Scripts -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.32.2/tocbot.min.js"></script>

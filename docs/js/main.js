@@ -3,37 +3,40 @@ const REPO_OWNER = 'guo-yu';
 const REPO_NAME = 'skills';
 const BRANCH = 'master';
 
-// Detect if running on GitHub Pages or locally
-function getBasePath(skillName) {
-    const isGitHubPages = window.location.hostname.includes('github.io');
-
-    if (isGitHubPages) {
-        // Use GitHub raw content URL
-        return `https://raw.githubusercontent.com/${REPO_OWNER}/${REPO_NAME}/${BRANCH}/${skillName}/SKILL.md`;
-    } else {
-        // Local development - use relative path
-        return `../${skillName}/SKILL.md`;
-    }
-}
-
 // Skills configuration
 const SKILLS = {
     'port-allocator': {
         title: 'Port Allocator',
-        description: '自动分配和管理开发服务器端口'
+        description: '自动分配和管理开发服务器端口',
+        icon: '⚡'
     },
     'share-skill': {
         title: 'Share Skill',
-        description: '将本地 skill 迁移到代码仓库'
+        description: '将本地 skill 迁移到代码仓库',
+        icon: '🔗'
     },
     'skill-permissions': {
         title: 'Skill Permissions',
-        description: '分析 skill 所需权限'
+        description: '分析 skill 所需权限',
+        icon: '🔐'
     }
 };
 
 // Default skill to show
 const DEFAULT_SKILL = 'port-allocator';
+
+// Detect if running on GitHub Pages or locally
+function getBasePath(skillName) {
+    const isGitHubPages = window.location.hostname.includes('github.io') ||
+                          window.location.hostname === 'skill.guoyu.me' ||
+                          window.location.hostname === 'guoyu.me';
+
+    if (isGitHubPages) {
+        return `https://raw.githubusercontent.com/${REPO_OWNER}/${REPO_NAME}/${BRANCH}/${skillName}/SKILL.md`;
+    } else {
+        return `../${skillName}/SKILL.md`;
+    }
+}
 
 // Configure marked
 marked.setOptions({
@@ -63,14 +66,16 @@ function getCurrentSkill() {
 
 // Update active nav link
 function updateActiveNav(skillName) {
-    document.querySelectorAll('.sidebar .nav-link').forEach(link => {
+    // Update sidebar links
+    document.querySelectorAll('.sidebar-link').forEach(link => {
         link.classList.remove('active');
         if (link.href.includes(`skill=${skillName}`)) {
             link.classList.add('active');
         }
     });
 
-    document.querySelectorAll('.dropdown-item').forEach(link => {
+    // Update dropdown links
+    document.querySelectorAll('.nav-dropdown-content a').forEach(link => {
         link.classList.remove('active');
         if (link.href.includes(`skill=${skillName}`)) {
             link.classList.add('active');
@@ -84,7 +89,7 @@ async function loadDocumentation(skillName) {
 
     if (!skill) {
         document.getElementById('content').innerHTML = `
-            <div class="alert alert-danger" role="alert">
+            <div class="alert alert-danger">
                 <h4>Skill Not Found</h4>
                 <p>The skill "${skillName}" does not exist.</p>
                 <p>Available skills: ${Object.keys(SKILLS).join(', ')}</p>
@@ -95,10 +100,13 @@ async function loadDocumentation(skillName) {
     const skillPath = getBasePath(skillName);
     console.log('Loading skill:', skillName);
     console.log('Path:', skillPath);
-    console.log('Is GitHub Pages:', window.location.hostname.includes('github.io'));
 
     try {
-        document.getElementById('content').innerHTML = '<div class="loading">Loading...</div>';
+        document.getElementById('content').innerHTML = `
+            <div class="loading">
+                <div class="loading-spinner"></div>
+                <p>Loading documentation...</p>
+            </div>`;
 
         const response = await fetch(skillPath);
         console.log('Response status:', response.status);
@@ -134,8 +142,8 @@ async function loadDocumentation(skillName) {
                 headingSelector: 'h1, h2, h3',
                 scrollSmooth: true,
                 scrollSmoothDuration: 300,
-                headingsOffset: 80,
-                scrollSmoothOffset: -80
+                headingsOffset: 100,
+                scrollSmoothOffset: -100
             });
         }, 100);
 
@@ -145,7 +153,7 @@ async function loadDocumentation(skillName) {
     } catch (error) {
         console.error('Error loading documentation:', error);
         document.getElementById('content').innerHTML = `
-            <div class="alert alert-danger" role="alert">
+            <div class="alert alert-danger">
                 <h4>Error Loading Documentation</h4>
                 <p>${error.message}</p>
                 <p>Path: ${skillPath}</p>
@@ -153,36 +161,19 @@ async function loadDocumentation(skillName) {
     }
 }
 
-// Dark/Light mode toggle
-function toggleTheme() {
-    const html = document.documentElement;
-    const currentTheme = html.getAttribute('data-bs-theme');
-    const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
-
-    html.setAttribute('data-bs-theme', newTheme);
-    localStorage.setItem('theme', newTheme);
-
-    // Update icon
-    document.getElementById('themeIcon').textContent = newTheme === 'dark' ? '🌙' : '☀️';
-
-    // Update highlight.js theme
-    updateHighlightTheme(newTheme);
+// Mobile menu toggle
+function toggleMobileMenu() {
+    const mobileMenu = document.getElementById('mobileMenu');
+    mobileMenu.classList.toggle('active');
 }
 
-function updateHighlightTheme(theme) {
-    const link = document.getElementById('hljs-theme');
-    if (link) {
-        link.href = theme === 'dark'
-            ? 'https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css'
-            : 'https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-light.min.css';
-    }
-}
-
-// Initialize theme icon on load
-function initThemeIcon() {
-    const theme = document.documentElement.getAttribute('data-bs-theme');
-    document.getElementById('themeIcon').textContent = theme === 'dark' ? '🌙' : '☀️';
-    updateHighlightTheme(theme);
+// Close mobile menu when clicking a link
+function setupMobileMenuLinks() {
+    document.querySelectorAll('.mobile-menu-content a').forEach(link => {
+        link.addEventListener('click', () => {
+            document.getElementById('mobileMenu').classList.remove('active');
+        });
+    });
 }
 
 // Handle URL changes (for SPA-like navigation)
@@ -193,8 +184,8 @@ function handleNavigation() {
 
 // Initialize
 document.addEventListener('DOMContentLoaded', () => {
-    initThemeIcon();
     handleNavigation();
+    setupMobileMenuLinks();
 });
 
 // Handle popstate for back/forward navigation
