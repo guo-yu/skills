@@ -607,26 +607,68 @@ share-skill 支持自动生成优雅的文档网站，用于展示 skill 的使�
    mkdir -p ~/Codes/skills/docs/js
    ```
 
-5. **创建 package.json**（如果不存在）
+5. **配置本地开发服务器**
 
-   为了让 port-allocator 能为项目分配端口，需要创建 package.json：
-   ```json
-   {
-     "name": "claude-code-skills",
-     "version": "1.0.0",
-     "description": "Claude Code Skills documentation site",
-     "private": true,
-     "scripts": {
-       "dev": "npx serve . -l <分配的端口>",
-       "dev:python": "python3 -m http.server <分配的端口>"
+   根据端点配置和现有 package.json 情况处理：
+
+   **场景 A：Monorepo 模式（默认端点）**
+
+   检查 `~/Codes/skills/package.json` 是否存在：
+
+   ```bash
+   if [ -f ~/Codes/skills/package.json ]; then
+     # 已存在，只添加 docs 相关脚本（不覆盖现有内容）
+     # 使用 jq 或手动合并 scripts
+   else
+     # 不存在，创建新的 package.json
+   fi
+   ```
+
+   - **已存在 package.json**：追加 `dev:docs` 脚本
+     ```bash
+     # 读取现有 package.json，添加新脚本
+     jq '.scripts["dev:docs"] = "npx serve . -l <端口>"' package.json > tmp.json
+     mv tmp.json package.json
+     ```
+
+   - **不存在 package.json**：创建新文件
+     ```json
+     {
+       "name": "claude-code-skills",
+       "version": "1.0.0",
+       "private": true,
+       "scripts": {
+         "dev": "npx serve . -l <端口>"
+       }
      }
-   }
+     ```
+
+   **场景 B：独立仓库模式（自定义端点）**
+
+   每个 skill 有独立的 Git 仓库，检查各自的 package.json：
+
+   ```bash
+   SKILL_DIR=~/Codes/skills/<skill-name>
+
+   if [ -f "$SKILL_DIR/package.json" ]; then
+     # ⚠️ 重要：不覆盖用户现有的 package.json
+     # 只追加 docs 脚本（如果不存在）
+     echo "检测到现有 package.json，追加 dev:docs 脚本"
+   else
+     # 创建最小化的 package.json
+     echo "创建 package.json..."
+   fi
    ```
 
    **端口分配流程：**
    - 读取 `~/.claude/port-registry.json` 获取下一个可用端口
    - 更新 port-registry 注册该项目
-   - 将分配的端口写入 package.json
+   - 追加或创建 package.json 中的开发脚本
+
+   **⚠️ 安全规则：**
+   - **绝不覆盖**现有的 package.json
+   - 只在 `scripts` 字段中**追加**新命令
+   - 如果 `dev` 脚本已存在，使用 `dev:docs` 作为替代命令名
 
 6. **配置自定义域名**（可选）
    ```bash
