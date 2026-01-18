@@ -18,13 +18,29 @@
 
 ## インストール
 
-リポジトリをクローンするか、シンボリックリンクを作成：
+### プラグインマーケットプレイス経由（推奨）
+
+最も簡単なインストール方法は Claude Code のプラグインマーケットプレイス経由です：
 
 ```bash
-# 方法 1: コードディレクトリにクローン
+# スキルマーケットプレイスを追加
+/plugin marketplace add guo-yu/skills
+
+# スキルをインストール
+/plugin install port-allocator@guo-yu-skills
+/plugin install share-skill@guo-yu-skills
+/plugin install skill-permissions@guo-yu-skills
+```
+
+### 手動インストール
+
+または、リポジトリをクローンしてシンボリックリンクを作成：
+
+```bash
+# コードディレクトリにクローン
 git clone git@github.com:guo-yu/skills.git ~/Codes/skills
 
-# 方法 2: ~/.claude/skills/ にシンボリックリンクを作成
+# ~/.claude/skills/ にシンボリックリンクを作成
 ln -s ~/Codes/skills/port-allocator ~/.claude/skills/port-allocator
 ln -s ~/Codes/skills/share-skill ~/.claude/skills/share-skill
 ln -s ~/Codes/skills/skill-permissions ~/.claude/skills/skill-permissions

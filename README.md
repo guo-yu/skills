@@ -18,13 +18,29 @@ My collection of custom Claude Code skills for productivity and automation.
 
 ## Installation
 
-Clone this repository or create symbolic links:
+### Via Plugin Marketplace (Recommended)
+
+The easiest way to install is via Claude Code's plugin marketplace:
 
 ```bash
-# Method 1: Clone to your codes directory
+# Add this skill marketplace
+/plugin marketplace add guo-yu/skills
+
+# Install all skills at once
+/plugin install port-allocator@guo-yu-skills
+/plugin install share-skill@guo-yu-skills
+/plugin install skill-permissions@guo-yu-skills
+```
+
+### Manual Installation
+
+Alternatively, clone this repository and create symbolic links:
+
+```bash
+# Clone to your codes directory
 git clone git@github.com:guo-yu/skills.git ~/Codes/skills
 
-# Method 2: Create symbolic links to ~/.claude/skills/
+# Create symbolic links to ~/.claude/skills/
 ln -s ~/Codes/skills/port-allocator ~/.claude/skills/port-allocator
 ln -s ~/Codes/skills/share-skill ~/.claude/skills/share-skill
 ln -s ~/Codes/skills/skill-permissions ~/.claude/skills/skill-permissions

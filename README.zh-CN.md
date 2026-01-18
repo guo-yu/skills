@@ -18,13 +18,29 @@
 
 ## 安装方法
 
-克隆本仓库或创建符号链接：
+### 通过插件市场安装（推荐）
+
+最简单的安装方式是通过 Claude Code 的插件市场：
 
 ```bash
-# 方法 1: 克隆到代码目录
+# 添加技能市场
+/plugin marketplace add guo-yu/skills
+
+# 安装技能
+/plugin install port-allocator@guo-yu-skills
+/plugin install share-skill@guo-yu-skills
+/plugin install skill-permissions@guo-yu-skills
+```
+
+### 手动安装
+
+也可以克隆本仓库并创建符号链接：
+
+```bash
+# 克隆到代码目录
 git clone git@github.com:guo-yu/skills.git ~/Codes/skills
 
-# 方法 2: 创建符号链接到 ~/.claude/skills/
+# 创建符号链接到 ~/.claude/skills/
 ln -s ~/Codes/skills/port-allocator ~/.claude/skills/port-allocator
 ln -s ~/Codes/skills/share-skill ~/.claude/skills/share-skill
 ln -s ~/Codes/skills/skill-permissions ~/.claude/skills/skill-permissions
