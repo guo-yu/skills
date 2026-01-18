@@ -35,30 +35,25 @@ const SKILLS = {
 // Default skill to show
 const DEFAULT_SKILL = 'port-allocator';
 
-// Custom renderer for marked.js
-const renderer = new marked.Renderer();
-
-// Add IDs to headings for TOC
-renderer.heading = function(token) {
-    const text = this.parser.parseInline(token.tokens);
-    const level = token.depth;
-    const id = text
-        .toLowerCase()
-        .replace(/<[^>]*>/g, '')
-        .replace(/[^\w\s\u4e00-\u9fa5-]/g, '')
-        .replace(/\s+/g, '-')
-        .replace(/-+/g, '-')
-        .trim();
-
-    return `<h${level} id="${id}">${text}</h${level}>\n`;
-};
-
 // Configure marked
 marked.setOptions({
     breaks: true,
     gfm: true
 });
-marked.use({ renderer });
+
+// Post-process HTML to add IDs to headings
+function addHeadingIds(html) {
+    return html.replace(/<h([1-6])>(.*?)<\/h[1-6]>/gi, (match, level, text) => {
+        const id = text
+            .toLowerCase()
+            .replace(/<[^>]*>/g, '')
+            .replace(/[^\w\s\u4e00-\u9fa5-]/g, '')
+            .replace(/\s+/g, '-')
+            .replace(/-+/g, '-')
+            .trim();
+        return `<h${level} id="${id}">${text}</h${level}>`;
+    });
+}
 
 // Get current skill from URL
 function getCurrentSkill() {
@@ -114,7 +109,8 @@ async function loadDocumentation(skillName) {
         markdown = markdown.replace(/^---[\s\S]*?---\n*/m, '');
 
         // Parse and render
-        const html = marked.parse(markdown);
+        let html = marked.parse(markdown);
+        html = addHeadingIds(html);
         document.getElementById('content').innerHTML = html;
 
         // Update page title
