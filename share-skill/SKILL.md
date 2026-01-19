@@ -1462,8 +1462,6 @@ The right sidebar provides quick installation instructions:
 <aside class="sidebar-right glass">
     <div class="sidebar-content">
         <div class="sidebar-section">
-            <h4 class="sidebar-heading" data-i18n="installation">Installation</h4>
-
             <!-- Natural language installation recommendation -->
             <div class="install-natural">
                 <p class="install-natural-desc" data-i18n="installNaturalDesc">We recommend installing via natural language:</p>
@@ -1473,7 +1471,6 @@ The right sidebar provides quick installation instructions:
             </div>
 
             <!-- Command line installation -->
-            <p class="install-desc" data-i18n="installDesc">The easiest way to install:</p>
             <div class="install-code">
                 <pre><code><span class="comment"># <span data-i18n="addMarketplace">Add marketplace</span></span>
 <span class="cmd">/plugin marketplace add {username}/{repo}</span>
