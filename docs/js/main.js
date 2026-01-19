@@ -13,39 +13,51 @@ const I18N = {
         onThisPage: 'On This Page',
         loading: 'Loading documentation...',
         installation: 'Installation',
+        installNaturalDesc: 'We recommend installing via natural language:',
+        installNaturalExample: 'Please help me install this skill:',
         installDesc: 'The easiest way to install:',
         addMarketplace: 'Add marketplace',
         installSkills: 'Install skills',
         moreOptions: 'More installation options',
         titleSuffix: "'s Skills",
         whyUseThis: 'Why Use This Skill?',
-        painPoints: 'Problems It Solves'
+        painPoints: 'Problems It Solves',
+        triggersTitle: 'How to Use',
+        triggersDesc: 'Trigger this skill with natural language:'
     },
     'zh-CN': {
         skills: '技能列表',
         onThisPage: '本页目录',
         loading: '加载文档中...',
         installation: '安装方法',
+        installNaturalDesc: '我们推荐使用自然语言安装：',
+        installNaturalExample: '请帮我安装这个 skill：',
         installDesc: '最简单的安装方式：',
         addMarketplace: '添加技能市场',
         installSkills: '安装技能',
         moreOptions: '更多安装选项',
         titleSuffix: ' 的技能集',
         whyUseThis: '为什么使用这个技能？',
-        painPoints: '它解决的问题'
+        painPoints: '它解决的问题',
+        triggersTitle: '如何调用',
+        triggersDesc: '使用自然语言即可触发此 skill：'
     },
     ja: {
         skills: 'スキル',
         onThisPage: 'このページ',
         loading: 'ドキュメントを読み込み中...',
         installation: 'インストール',
+        installNaturalDesc: '自然言語でのインストールをお勧めします：',
+        installNaturalExample: 'このスキルをインストールしてください：',
         installDesc: '最も簡単なインストール方法：',
         addMarketplace: 'マーケットプレイスを追加',
         installSkills: 'スキルをインストール',
         moreOptions: 'その他のインストールオプション',
         titleSuffix: ' のスキル',
         whyUseThis: 'なぜこのスキルを使うのか？',
-        painPoints: '解決する問題'
+        painPoints: '解決する問題',
+        triggersTitle: '使い方',
+        triggersDesc: '自然言語でこのスキルを呼び出せます：'
     }
 };
 
@@ -71,6 +83,10 @@ const SKILL_MARKETING = {
                     title: 'Accidentally killing other projects',
                     desc: 'Running `pkill node` nukes everything. This skill ensures you only touch your current project\'s ports.'
                 }
+            ],
+            triggers: [
+                'Help me allocate a port for my project',
+                'Start the dev server for me'
             ]
         },
         'zh-CN': {
@@ -92,6 +108,10 @@ const SKILL_MARKETING = {
                     title: '误杀其他项目',
                     desc: '执行 `pkill node` 会杀死所有进程。这个技能确保你只操作当前项目的端口。'
                 }
+            ],
+            triggers: [
+                '帮我为项目自动分配端口',
+                '帮我启动开发服务器'
             ]
         },
         ja: {
@@ -113,6 +133,10 @@ const SKILL_MARKETING = {
                     title: '他のプロジェクトを誤って終了',
                     desc: '`pkill node`は全てを終了させます。このスキルは現在のプロジェクトのポートのみを操作することを保証。'
                 }
+            ],
+            triggers: [
+                'プロジェクトにポートを自動割り当てしてください',
+                '開発サーバーを起動してください'
             ]
         }
     },
@@ -136,6 +160,10 @@ const SKILL_MARKETING = {
                     title: 'No discovery mechanism',
                     desc: 'Skills hidden in local folders with no documentation. This creates a beautiful docs site automatically.'
                 }
+            ],
+            triggers: [
+                'Help me open source my skill',
+                'Generate documentation for my skills'
             ]
         },
         'zh-CN': {
@@ -157,6 +185,10 @@ const SKILL_MARKETING = {
                     title: '没有发现机制',
                     desc: '技能隐藏在本地文件夹中，没有文档。这个技能会自动创建精美的文档站点。'
                 }
+            ],
+            triggers: [
+                '帮我开源这个技能',
+                '帮我生成技能文档'
             ]
         },
         ja: {
@@ -178,6 +210,10 @@ const SKILL_MARKETING = {
                     title: '発見メカニズムがない',
                     desc: 'スキルがドキュメントなしでローカルフォルダに隠れています。美しいドキュメントサイトを自動作成します。'
                 }
+            ],
+            triggers: [
+                'スキルをオープンソースにしてください',
+                'スキルのドキュメントを生成してください'
             ]
         }
     },
@@ -201,6 +237,10 @@ const SKILL_MARKETING = {
                     title: 'Tedious manual configuration',
                     desc: 'Manually editing settings.json to add allowedCommands is error-prone and time-consuming.'
                 }
+            ],
+            triggers: [
+                'Analyze what permissions this skill needs',
+                'Help me authorize this skill'
             ]
         },
         'zh-CN': {
@@ -222,6 +262,10 @@ const SKILL_MARKETING = {
                     title: '繁琐的手动配置',
                     desc: '手动编辑 settings.json 添加 allowedCommands 容易出错且耗时。'
                 }
+            ],
+            triggers: [
+                '分析这个技能需要什么权限',
+                '帮我授权这个技能'
             ]
         },
         ja: {
@@ -243,6 +287,10 @@ const SKILL_MARKETING = {
                     title: '面倒な手動設定',
                     desc: 'settings.jsonを手動で編集してallowedCommandsを追加するのはエラーが起きやすく時間がかかります。'
                 }
+            ],
+            triggers: [
+                'このスキルに必要な権限を分析してください',
+                'このスキルを認証してください'
             ]
         }
     },
@@ -266,6 +314,10 @@ const SKILL_MARKETING = {
                     title: 'Translations get out of sync',
                     desc: 'Every update to the original requires re-translating. Automated i18n keeps all versions aligned.'
                 }
+            ],
+            triggers: [
+                'Translate my skill into Chinese and Japanese',
+                'Help me internationalize this skill'
             ]
         },
         'zh-CN': {
@@ -287,6 +339,10 @@ const SKILL_MARKETING = {
                     title: '翻译版本不同步',
                     desc: '每次更新原文都需要重新翻译。自动化 i18n 让所有版本保持一致。'
                 }
+            ],
+            triggers: [
+                '帮我把技能翻译成中文和日文',
+                '帮我做技能国际化'
             ]
         },
         ja: {
@@ -308,6 +364,10 @@ const SKILL_MARKETING = {
                     title: '翻訳が同期しなくなる',
                     desc: 'オリジナルを更新するたびに再翻訳が必要。自動化されたi18nは全バージョンを整合させます。'
                 }
+            ],
+            triggers: [
+                'スキルを中国語と日本語に翻訳してください',
+                'スキルの国際化を手伝ってください'
             ]
         }
     }
@@ -386,7 +446,11 @@ function renderInstallCode() {
         .map(id => `<span class="cmd">/plugin install ${id}@${repoSlug}</span>`)
         .join('\n');
 
-    installCode.innerHTML = `<pre><code><span class="comment"># <span data-i18n="addMarketplace">${t.addMarketplace}</span></span>
+    installCode.innerHTML = `<div class="install-natural">
+<p class="install-natural-desc">${t.installNaturalDesc}</p>
+<div class="install-natural-example">"${t.installNaturalExample} https://github.com/${REPO_OWNER}/${REPO_NAME}"</div>
+</div>
+<pre><code><span class="comment"># <span data-i18n="addMarketplace">${t.addMarketplace}</span></span>
 <span class="cmd">/plugin marketplace add ${REPO_OWNER}/${REPO_NAME}</span>
 
 <span class="comment"># <span data-i18n="installSkills">${t.installSkills}</span></span>
@@ -530,6 +594,33 @@ marked.setOptions({
     gfm: true
 });
 
+// Render triggers section for a skill
+function renderTriggersSection(skillName) {
+    const marketing = SKILL_MARKETING[skillName];
+    if (!marketing) return '';
+
+    const content = marketing[currentLang] || marketing['en'];
+    if (!content || !content.triggers || content.triggers.length === 0) return '';
+
+    const t = I18N[currentLang];
+
+    const triggersHtml = content.triggers.map(trigger => `
+        <div class="trigger-item">
+            <span class="trigger-quote">"${trigger}"</span>
+        </div>
+    `).join('');
+
+    return `
+        <div class="triggers-section">
+            <h3 class="triggers-title">💬 ${t.triggersTitle}</h3>
+            <p class="triggers-desc">${t.triggersDesc}</p>
+            <div class="triggers-list">
+                ${triggersHtml}
+            </div>
+        </div>
+    `;
+}
+
 // Render marketing section for a skill
 function renderMarketingSection(skillName) {
     const marketing = SKILL_MARKETING[skillName];
@@ -550,6 +641,8 @@ function renderMarketingSection(skillName) {
         </div>
     `).join('');
 
+    const triggersHtml = renderTriggersSection(skillName);
+
     return `
         <div class="marketing-section">
             <div class="marketing-headline">
@@ -564,6 +657,7 @@ function renderMarketingSection(skillName) {
                     ${painPointsHtml}
                 </div>
             </div>
+            ${triggersHtml}
         </div>
     `;
 }

@@ -1393,3 +1393,86 @@ blockquote p {
 ::-webkit-scrollbar-thumb:hover {
     background: var(--color-text-muted);
 }
+
+/* ========================================
+   Triggers Section
+   ======================================== */
+
+.triggers-section {
+    margin-top: 2rem;
+    padding: 1.5rem;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--glass-border);
+    border-radius: 12px;
+}
+
+.triggers-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin: 0 0 0.5rem 0;
+    color: var(--color-text);
+}
+
+.triggers-desc {
+    font-size: 0.875rem;
+    color: var(--color-text-muted);
+    margin: 0 0 1rem 0;
+}
+
+.triggers-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.trigger-item {
+    padding: 0.75rem 1rem;
+    background: rgba(59, 130, 246, 0.1);
+    border-radius: 8px;
+    border-left: 3px solid rgba(59, 130, 246, 0.5);
+    transition: all 200ms ease;
+}
+
+.trigger-item:hover {
+    background: rgba(59, 130, 246, 0.15);
+    border-left-color: rgba(59, 130, 246, 0.8);
+}
+
+.trigger-quote {
+    font-size: 0.9rem;
+    color: var(--color-text);
+    font-style: italic;
+}
+
+/* ========================================
+   Natural Language Installation
+   ======================================== */
+
+.install-natural {
+    margin-bottom: 1.5rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid var(--glass-border);
+}
+
+.install-natural-desc {
+    font-size: 0.875rem;
+    color: var(--color-text-muted);
+    margin: 0 0 0.75rem 0;
+}
+
+.install-natural-example {
+    padding: 0.75rem 1rem;
+    background: rgba(59, 130, 246, 0.1);
+    border-radius: 8px;
+    border-left: 3px solid rgba(59, 130, 246, 0.5);
+    font-size: 0.85rem;
+    color: var(--color-text);
+    font-style: italic;
+    word-break: break-all;
+    transition: all 200ms ease;
+}
+
+.install-natural-example:hover {
+    background: rgba(59, 130, 246, 0.15);
+    border-left-color: rgba(59, 130, 246, 0.8);
+}
