@@ -28,6 +28,11 @@
       "name": "skill-i18n",
       "source": "./skill-i18n",
       "description": "Translate SKILL.md and README.md files into multiple languages for sharing skills internationally"
+    },
+    {
+      "name": "ceo-skill",
+      "source": "./ceo-skill",
+      "description": "Intelligent project management dashboard - view all projects status, priorities, and todos from a CEO perspective"
     }
   ]
 }

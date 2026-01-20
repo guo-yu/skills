@@ -16,6 +16,7 @@
 | [share-skill](./share-skill/) | 将本地技能迁移到代码仓库，支持 Git 版本管理和开源 |
 | [skill-permissions](./skill-permissions/) | 分析技能所需权限，生成一次性授权命令 |
 | [skill-i18n](./skill-i18n/) | 将 SKILL.md 和 README.md 翻译成多语言版本，便于国际化分享技能 |
+| [ceo-skill](./ceo-skill/) | 智能项目管理仪表盘 - 以 CEO 视角查看所有项目状态、优先级和待办事项 |
 
 ## 安装方法
 
@@ -32,6 +33,7 @@
 /plugin install share-skill@guo-yu-skills
 /plugin install skill-permissions@guo-yu-skills
 /plugin install skill-i18n@guo-yu-skills
+/plugin install ceo-skill@guo-yu-skills
 ```
 
 ### 手动安装
@@ -47,6 +49,7 @@ ln -s ~/Codes/skills/port-allocator ~/.claude/skills/port-allocator
 ln -s ~/Codes/skills/share-skill ~/.claude/skills/share-skill
 ln -s ~/Codes/skills/skill-permissions ~/.claude/skills/skill-permissions
 ln -s ~/Codes/skills/skill-i18n ~/.claude/skills/skill-i18n
+ln -s ~/Codes/skills/ceo-skill ~/.claude/skills/ceo-skill
 ```
 
 ## 使用方法
@@ -58,6 +61,7 @@ ln -s ~/Codes/skills/skill-i18n ~/.claude/skills/skill-i18n
 /share-skill <name>      # 开源技能
 /skill-permissions       # 分析技能权限
 /skill-i18n <name>       # 将技能翻译成多语言版本
+/ceo                     # 项目管理仪表盘
 ```
 
 ## 在线文档

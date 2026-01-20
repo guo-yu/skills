@@ -370,6 +370,86 @@ const SKILL_MARKETING = {
                 'スキルの国際化を手伝ってください'
             ]
         }
+    },
+    'ceo-skill': {
+        en: {
+            headline: 'Manage all your projects like a CEO',
+            why: 'You have 10 projects but no idea which deserves your attention today. You jump between folders, check git logs manually, and forget what you were working on. CEO Skill gives you a bird\'s-eye view of all projects, ranked by ROI and business potential, so you focus on what matters most.',
+            painPoints: [
+                {
+                    icon: '📊',
+                    title: 'No visibility across projects',
+                    desc: 'Switching between projects without knowing their status wastes time and mental energy.'
+                },
+                {
+                    icon: '🎯',
+                    title: 'Wrong priorities',
+                    desc: 'Working on low-impact projects while high-value ones collect dust. Smart scoring fixes this.'
+                },
+                {
+                    icon: '🔄',
+                    title: 'Context switching overhead',
+                    desc: 'Every project switch requires remembering where you left off. Cached metrics eliminate this.'
+                }
+            ],
+            triggers: [
+                'Show me all my projects',
+                'What should I work on today?',
+                'Which project is most important?'
+            ]
+        },
+        'zh-CN': {
+            headline: '像 CEO 一样管理你的所有项目',
+            why: '你有 10 个项目，但不知道今天该关注哪个。你在文件夹间跳来跳去，手动检查 git 日志，然后忘了自己在做什么。CEO Skill 让你鸟瞰所有项目，按 ROI 和商业潜力排序，让你专注于最重要的事。',
+            painPoints: [
+                {
+                    icon: '📊',
+                    title: '项目状态不可见',
+                    desc: '在不了解状态的情况下切换项目，浪费时间和精力。'
+                },
+                {
+                    icon: '🎯',
+                    title: '优先级搞错了',
+                    desc: '在低价值项目上工作，而高价值项目落灰。智能评分解决这个问题。'
+                },
+                {
+                    icon: '🔄',
+                    title: '上下文切换开销',
+                    desc: '每次切换项目都要回忆上次做到哪了。缓存机制消除这种开销。'
+                }
+            ],
+            triggers: [
+                '显示我所有的项目',
+                '今天我应该做什么？',
+                '哪个项目最重要？'
+            ]
+        },
+        ja: {
+            headline: 'CEOのように全プロジェクトを管理',
+            why: '10個のプロジェクトがあるのに、今日どれに集中すべきかわからない。フォルダ間を行き来し、手動でgitログを確認し、何をしていたか忘れてしまう。CEO Skillは全プロジェクトを俯瞰し、ROIとビジネスポテンシャルでランク付けし、最も重要なことに集中できます。',
+            painPoints: [
+                {
+                    icon: '📊',
+                    title: 'プロジェクト状況が見えない',
+                    desc: '状況を把握せずにプロジェクトを切り替えると、時間と精神的エネルギーを浪費します。'
+                },
+                {
+                    icon: '🎯',
+                    title: '優先順位の間違い',
+                    desc: '価値の低いプロジェクトに取り組み、高価値のものが放置される。スマートスコアリングで解決。'
+                },
+                {
+                    icon: '🔄',
+                    title: 'コンテキスト切り替えのオーバーヘッド',
+                    desc: 'プロジェクト切り替えのたびに前回の状態を思い出す必要がある。キャッシュがこれを解消。'
+                }
+            ],
+            triggers: [
+                '全プロジェクトを見せて',
+                '今日は何に取り組むべき？',
+                'どのプロジェクトが最も重要？'
+            ]
+        }
     }
 };
 
@@ -394,6 +474,11 @@ const SKILLS = {
         title: 'Skill i18n',
         description: '将 SKILL.md 翻译成多语言版本',
         icon: '<circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>'
+    },
+    'ceo-skill': {
+        title: 'CEO Skill',
+        description: 'CEO 视角的项目管理仪表盘',
+        icon: '<path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>'
     }
 };
 
