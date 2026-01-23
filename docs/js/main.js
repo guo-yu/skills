@@ -373,13 +373,13 @@ const SKILL_MARKETING = {
     },
     'ceo-skill': {
         en: {
-            headline: 'Manage projects like a CEO, optimize costs like a COO',
-            why: 'You have 10 projects but no idea which deserves your attention today. Your API bills are growing but you don\'t know which services are eating your budget. CEO Skill gives you a bird\'s-eye view of all projects ranked by ROI, plus COO-level cost analysis with actionable optimization recommendations.',
+            headline: 'CEO dashboard + COO costs + CMO marketing—all in one skill',
+            why: 'You have 10 projects but no idea which deserves your attention. Your API bills are growing mysteriously. Your team ships features but users don\'t know about them. CEO Skill combines executive-level project visibility, cost optimization analysis, and marketing content generation from git commits—turning technical work into user-facing updates.',
             painPoints: [
                 {
                     icon: '📊',
                     title: 'No visibility across projects',
-                    desc: 'Switching between projects without knowing their status wastes time and mental energy.'
+                    desc: 'Switching between projects without knowing their status wastes time. Smart scoring ranks by ROI.'
                 },
                 {
                     icon: '💸',
@@ -387,25 +387,25 @@ const SKILL_MARKETING = {
                     desc: 'Multiple services across projects add up. COO analysis spots redundancy and suggests 30-50% savings.'
                 },
                 {
-                    icon: '🎯',
-                    title: 'Wrong priorities',
-                    desc: 'Working on low-impact projects while high-value ones collect dust. Smart scoring fixes this.'
+                    icon: '📣',
+                    title: 'Great work, zero marketing',
+                    desc: 'You ship features but users don\'t know. CMO changelog turns commits into email templates + Twitter threads.'
                 }
             ],
             triggers: [
                 'Show me all my projects',
                 'What are my API costs?',
-                'How can I reduce spending?'
+                'Generate changelog from recent commits'
             ]
         },
         'zh-CN': {
-            headline: '像 CEO 一样管理项目，像 COO 一样优化成本',
-            why: '你有 10 个项目，但不知道今天该关注哪个。API 账单在增长，但你不知道哪些服务在烧钱。CEO Skill 让你鸟瞰所有项目并按 ROI 排序，还有 COO 级别的成本分析和可操作的优化建议。',
+            headline: 'CEO 仪表盘 + COO 成本分析 + CMO 营销内容，三合一',
+            why: '你有 10 个项目，但不知道今天该关注哪个。API 账单在神秘增长。团队在发布功能，但用户不知道。CEO Skill 结合了高管级项目可见性、成本优化分析、以及从 git 提交生成营销内容——把技术工作转化为用户可感知的更新。',
             painPoints: [
                 {
                     icon: '📊',
                     title: '项目状态不可见',
-                    desc: '在不了解状态的情况下切换项目，浪费时间和精力。'
+                    desc: '在不了解状态的情况下切换项目，浪费时间。智能评分按 ROI 排序。'
                 },
                 {
                     icon: '💸',
@@ -413,25 +413,25 @@ const SKILL_MARKETING = {
                     desc: '多个项目的多个服务叠加起来。COO 分析发现冗余，建议节省 30-50%。'
                 },
                 {
-                    icon: '🎯',
-                    title: '优先级搞错了',
-                    desc: '在低价值项目上工作，而高价值项目落灰。智能评分解决这个问题。'
+                    icon: '📣',
+                    title: '做了很多，营销为零',
+                    desc: '你发布了功能但用户不知道。CMO 更新日志把提交变成邮件模板 + Twitter 帖子串。'
                 }
             ],
             triggers: [
                 '显示我所有的项目',
                 '我的 API 成本是多少？',
-                '如何减少开支？'
+                '从最近的提交生成更新日志'
             ]
         },
         ja: {
-            headline: 'CEOのようにプロジェクト管理、COOのようにコスト最適化',
-            why: '10個のプロジェクトがあるのに、今日どれに集中すべきかわからない。API請求額は増えているが、どのサービスが予算を食っているかわからない。CEO Skillは全プロジェクトをROIでランク付けし、さらにCOOレベルのコスト分析と実行可能な最適化提案を提供します。',
+            headline: 'CEOダッシュボード + COOコスト分析 + CMOマーケティング、オールインワン',
+            why: '10個のプロジェクトがあるのに、今日どれに集中すべきかわからない。API請求額が謎に増えている。チームは機能をリリースしているが、ユーザーは知らない。CEO Skillはエグゼクティブレベルのプロジェクト可視性、コスト最適化分析、そしてgitコミットからのマーケティングコンテンツ生成を組み合わせ、技術的な作業をユーザー向けの更新に変換します。',
             painPoints: [
                 {
                     icon: '📊',
                     title: 'プロジェクト状況が見えない',
-                    desc: '状況を把握せずにプロジェクトを切り替えると、時間と精神的エネルギーを浪費します。'
+                    desc: '状況を把握せずにプロジェクトを切り替えると、時間を浪費。スマートスコアリングでROI順に表示。'
                 },
                 {
                     icon: '💸',
@@ -439,15 +439,15 @@ const SKILL_MARKETING = {
                     desc: '複数プロジェクトの複数サービスが積み重なる。COO分析で冗長性を発見し、30-50%の削減を提案。'
                 },
                 {
-                    icon: '🎯',
-                    title: '優先順位の間違い',
-                    desc: '価値の低いプロジェクトに取り組み、高価値のものが放置される。スマートスコアリングで解決。'
+                    icon: '📣',
+                    title: '素晴らしい仕事、マーケティングゼロ',
+                    desc: '機能をリリースしてもユーザーは知らない。CMOチェンジログでコミットをメールテンプレート + Twitterスレッドに変換。'
                 }
             ],
             triggers: [
                 '全プロジェクトを見せて',
                 'APIコストはいくら？',
-                '支出を減らすには？'
+                '最近のコミットからチェンジログを生成'
             ]
         }
     }
@@ -477,7 +477,7 @@ const SKILLS = {
     },
     'ceo-skill': {
         title: 'CEO Skill',
-        description: 'CEO 视角的项目管理 + COO 级成本分析',
+        description: 'CEO 项目管理 + COO 成本分析 + CMO 营销内容生成',
         icon: '<path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>'
     }
 };
