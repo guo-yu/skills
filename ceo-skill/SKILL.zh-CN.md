@@ -75,6 +75,8 @@ description: 智能项目管理仪表盘 - 以 CEO 视角查看所有项目状�
 | `/ceo costs <name>` | 特定项目的详细成本分析 |
 | `/ceo costs refresh` | 强制重新扫描所有 API 服务 |
 | `/ceo costs set <project> <service> <amount>` | 手动设置实际月度成本 |
+| `/ceo changelog [--lang=en\|zh]` | 从最近 24 小时的提交生成营销更新日志 |
+| `/ceo changelog --days=N` | 分析最近 N 天的提交（默认：1） |
 
 ## 触发词
 
@@ -952,3 +954,705 @@ grep -q "d1_databases" wrangler.toml && echo "cloudflare_d1"
 ```
 
 显示的成本是"中档"估算，除非设置了手动覆盖值。
+
+## 营销更新日志生成器
+
+从最近的 git 提交生成面向用户的营销内容。将技术变更转化为能引起用户共鸣的精彩更新。
+
+### CMO 角色设定
+
+生成更新日志内容时，你将扮演：
+
+**一位出色的首席营销官（CMO）**，拥有：
+- 10+ 年科技产品营销经验
+- 将技术功能转化为用户利益的深厚专业知识
+- 产品病毒式传播和社区建设的成功案例
+- 识别用户兴奋点和参与度的敏锐直觉
+- 打造推动采用和留存的叙事经验
+
+**你的沟通思维：**
+- 技术提交说明"做了什么"；你要传达"这对用户有什么意义"
+- 每一个变更都是展示价值和对用户关怀的机会
+- 用利益说话，而非功能："更快" → "更快回到工作中"
+- 使用情感触发点：节省时间、减少挫败感、更有信心
+- 制造期待感："你现在可以..." 暗示其他人已经受益
+- 真诚，不油腻：用户能立刻识别虚假的热情
+
+**语言风格指南：**
+| 语言 | 基调 | 风格 |
+|------|------|------|
+| 英文 | 友好、自信、简洁 | 技术感但易懂 |
+| 中文 | 温暖、专业、尊重 | 正式但亲切，避免过度营销感 |
+
+### 命令：`/ceo changelog`
+
+分析最近的提交并生成营销内容。
+
+**选项：**
+- `--lang=en|zh` - 输出语言（默认：en）
+- `--days=N` - 分析天数（默认：1，最大：7）
+- `--project=<name>` - 仅分析特定项目
+- `--format=email|twitter|both` - 输出格式（默认：both）
+
+### 执行步骤
+
+#### 步骤 1：收集提交
+
+```bash
+# 对 ceo-dashboard.json 中的每个项目
+cd <project_path>
+
+# 获取最近 24 小时的提交（或 N 天）
+git log --since="24 hours ago" --pretty=format:"%H|%s|%an|%ai" --no-merges
+
+# 获取文件变更统计
+git log --since="24 hours ago" --stat --no-merges
+```
+
+#### 步骤 2：分类变更
+
+使用约定式提交模式和内容分析对每个提交进行分类：
+
+| 分类 | 检测模式 | 面向用户的名称 |
+|------|----------|---------------|
+| 功能 | `feat:`, `add`, `new`, `implement` | 新功能 |
+| 修复 | `fix:`, `bug`, `patch`, `resolve` | 问题修复 |
+| 性能 | `perf:`, `optimize`, `faster`, `speed` | 性能提升 |
+| 体验 | `ui:`, `ux:`, `style`, `design` | 用户体验 |
+| 安全 | `security:`, `auth`, `encrypt`, `protect` | 安全更新 |
+| 文档 | `docs:`, `readme`, `guide` | 文档更新 |
+| 重构 | `refactor:`, `clean`, `restructure` | 幕后优化 |
+
+**聚合规则：**
+- 跨项目合并相似变更
+- 优先展示面向用户的变更，而非内部重构
+- 统计每个分类的提交数用于权重强调
+
+#### 步骤 3：转化为用户利益
+
+对每个变更分类，应用 CMO 转化：
+
+| 技术变更 | 用户利益 |
+|----------|----------|
+| "添加缓存层" | "页面加载速度提升 2 倍" |
+| "修复认证令牌刷新" | "不再意外登出" |
+| "实现深色模式" | "夜间使用更护眼" |
+| "重构数据库查询" | "搜索结果即时呈现" |
+| "添加速率限制" | "高峰期服务更稳定" |
+
+**转化提示词模板：**
+```
+给定这个技术提交："<commit_message>"
+在项目：<project_name>（<project_description>）
+
+转化为面向用户的利益陈述：
+- 聚焦用户获得的价值
+- 使用主动语态
+- 具体但简洁
+- 避免技术术语
+```
+
+#### 步骤 4：生成邮件模板
+
+输出与 React Email 兼容的模板，遵循 m0rphic 的样式风格。
+
+**邮件结构：**
+```tsx
+// Resend 兼容的 React Email 模板
+import {
+  Body, Button, Container, Head, Heading, Hr,
+  Html, Link, Preview, Section, Text,
+} from "@react-email/components";
+
+interface ChangelogEmailProps {
+  locale: "en" | "zh";
+  dateRange: string;
+  changes: {
+    category: string;
+    items: { title: string; description: string; project: string }[];
+  }[];
+  ctaUrl: string;
+  totalCommits: number;
+  projectCount: number;
+}
+```
+
+**色彩方案（深色主题）：**
+```typescript
+const colors = {
+  background: "#0a0a0a",
+  container: "#141414",
+  card: "#1a1a1a",
+  accent: "#8b5cf6",      // 紫色
+  success: "#22c55e",     // 绿色
+  text: {
+    primary: "#ffffff",
+    secondary: "#a3a3a3",
+    muted: "#737373",
+    subtle: "#525252",
+  },
+  border: "#262626",
+};
+```
+
+**邮件翻译：**
+```typescript
+const translations = {
+  en: {
+    preview: (count: number) => `[Your Product] Weekly Update - ${count} improvements shipped`,
+    title: "What's New This Week",
+    greeting: "Hey there,",
+    intro: (commits: number, projects: number) =>
+      `Our team has been busy! Here's what we shipped across ${projects} project${projects > 1 ? 's' : ''}:`,
+    newFeatures: "New Features",
+    bugFixes: "Bug Fixes",
+    improvements: "Improvements",
+    security: "Security Updates",
+    cta: "Try It Now",
+    footer: "Thanks for being part of our journey!",
+  },
+  zh: {
+    preview: (count: number) => `[产品名] 本周更新 - ${count} 项改进已上线`,
+    title: "最新动态",
+    greeting: "你好，",
+    intro: (commits: number, projects: number) =>
+      `我们的团队一直在努力！以下是 ${projects} 个项目的最新进展：`,
+    newFeatures: "新功能",
+    bugFixes: "问题修复",
+    improvements: "体验优化",
+    security: "安全更新",
+    cta: "立即体验",
+    footer: "感谢你的支持与信任！",
+  },
+};
+```
+
+#### 步骤 5：生成 Twitter/X 帖子串
+
+创建 Twitter 帖子串格式（单个串，多条推文）。
+
+**帖子串结构：**
+```
+推文 1（钩子 - 最多 280 字符）：
+🚀 [产品名] 更新速报
+
+本周我们发布了 [N] 项更新，让你的体验更好。
+
+一起来看看 👇
+
+---
+推文 2-N（变更 - 每条最多 280 字符）：
+✨ [分类]：[利益陈述]
+
+[简要说明为什么这很重要]
+
+---
+最后一条推文（行动号召 - 最多 280 字符）：
+以上就是本周的更新！🎉
+
+立即体验：[链接]
+
+还想要什么功能？评论区告诉我们！
+```
+
+**帖子串规则：**
+- 每个串最多 5-7 条推文
+- 每条推文必须 ≤280 字符
+- 策略性使用表情符号（不要过度）
+- 第一条是钩子 - 必须吸引注意力
+- 最后一条是行动号召 + 互动邀请
+- 中间的推文按相关变更分组
+
+**表情符号指南：**
+| 分类 | 表情 |
+|------|------|
+| 功能 | ✨ |
+| 修复 | 🔧 |
+| 性能 | ⚡ |
+| 安全 | 🔒 |
+| 体验 | 💎 |
+| 通用 | 🚀 |
+
+### 输出格式
+
+```
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  营销更新日志 - 2026-01-23
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  📊 分析摘要
+  ────────────────────────────────────────────────────────────────────
+  时间范围:         过去 24 小时
+  项目:             3 个（saifuri, kimeeru, m0rphic）
+  总提交数:         12
+
+  按分类:
+    ✨ 功能:        4 次提交
+    🔧 修复:        5 次提交
+    ⚡ 性能:        2 次提交
+    💎 体验:        1 次提交
+
+  📧 邮件模板（Resend 兼容的 React Email）
+  ────────────────────────────────────────────────────────────────────
+
+  [生成的 TSX 代码 - 可直接复制粘贴]
+
+  🐦 TWITTER/X 帖子串
+  ────────────────────────────────────────────────────────────────────
+
+  帖子 1/5:
+  🚀 本周更新速报
+
+  本周我们在 3 个产品中发布了 12 项更新。
+
+  一起来看看 👇
+
+  ---
+  帖子 2/5:
+  ✨ 新功能：智能通知
+
+  在重要时刻收到重要通知。
+  告别通知疲劳。
+
+  ---
+  [... 更多推文 ...]
+
+  ---
+  帖子 5/5:
+  以上就是本周的更新！🎉
+
+  立即体验：https://yourproduct.com
+
+  还想要什么功能？评论区告诉我们！
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+```
+
+### 完整邮件模板示例
+
+```tsx
+import {
+  Body,
+  Button,
+  Container,
+  Head,
+  Heading,
+  Hr,
+  Html,
+  Link,
+  Preview,
+  Section,
+  Text,
+} from "@react-email/components";
+
+const translations = {
+  en: {
+    preview: (count: number) =>
+      `We shipped ${count} updates to make your experience better`,
+    title: "What's New",
+    greeting: "Hey there,",
+    intro: (commits: number, projects: number) =>
+      `Our team has been busy! Here are ${commits} updates we shipped this week:`,
+    newFeatures: "New Features",
+    bugFixes: "Bug Fixes",
+    improvements: "Improvements",
+    cta: "Try It Now",
+    footerText: "Thanks for being part of our journey!",
+    unsubscribe: "Unsubscribe from updates",
+  },
+  zh: {
+    preview: (count: number) => `我们发布了 ${count} 项更新，让你的体验更好`,
+    title: "最新动态",
+    greeting: "你好，",
+    intro: (commits: number, projects: number) =>
+      `我们的团队一直在努力！以下是本周发布的 ${commits} 项更新：`,
+    newFeatures: "新功能",
+    bugFixes: "问题修复",
+    improvements: "体验优化",
+    cta: "立即体验",
+    footerText: "感谢你与我们同行！",
+    unsubscribe: "退订更新通知",
+  },
+} as const;
+
+type Locale = keyof typeof translations;
+
+interface ChangeItem {
+  title: string;
+  description: string;
+  project?: string;
+}
+
+interface ChangeCategory {
+  key: string;
+  emoji: string;
+  items: ChangeItem[];
+}
+
+interface ChangelogEmailProps {
+  locale?: Locale;
+  productName: string;
+  productUrl: string;
+  dateRange: string;
+  totalCommits: number;
+  projectCount: number;
+  changes: ChangeCategory[];
+  unsubscribeUrl?: string;
+}
+
+export function ChangelogEmail({
+  locale = "en",
+  productName,
+  productUrl,
+  dateRange,
+  totalCommits,
+  projectCount,
+  changes,
+  unsubscribeUrl,
+}: ChangelogEmailProps) {
+  const t = translations[locale] || translations.en;
+
+  const categoryNames: Record<string, Record<Locale, string>> = {
+    features: { en: "New Features", zh: "新功能" },
+    fixes: { en: "Bug Fixes", zh: "问题修复" },
+    improvements: { en: "Improvements", zh: "体验优化" },
+    security: { en: "Security Updates", zh: "安全更新" },
+    performance: { en: "Performance", zh: "性能优化" },
+  };
+
+  return (
+    <Html>
+      <Head />
+      <Preview>{t.preview(totalCommits)}</Preview>
+      <Body style={main}>
+        <Container style={container}>
+          {/* Logo/品牌 */}
+          <Section style={logoSection}>
+            <Text style={logoText}>{productName}</Text>
+          </Section>
+
+          {/* 标题 */}
+          <Heading style={heading}>{t.title}</Heading>
+          <Text style={dateText}>{dateRange}</Text>
+
+          {/* 问候语和介绍 */}
+          <Text style={paragraph}>{t.greeting}</Text>
+          <Text style={paragraph}>
+            {t.intro(totalCommits, projectCount)}
+          </Text>
+
+          {/* 按分类显示变更 */}
+          {changes.map((category, i) => (
+            <Section key={i} style={categorySection}>
+              <Text style={categoryTitle}>
+                {category.emoji} {categoryNames[category.key]?.[locale] || category.key}
+              </Text>
+              {category.items.map((item, j) => (
+                <Section key={j} style={changeCard}>
+                  <Text style={changeTitle}>{item.title}</Text>
+                  <Text style={changeDescription}>{item.description}</Text>
+                  {item.project && (
+                    <Text style={projectTag}>{item.project}</Text>
+                  )}
+                </Section>
+              ))}
+            </Section>
+          ))}
+
+          {/* 行动按钮 */}
+          <Section style={buttonContainer}>
+            <Button style={button} href={productUrl}>
+              {t.cta}
+            </Button>
+          </Section>
+
+          <Hr style={hr} />
+
+          {/* 页脚 */}
+          <Text style={footer}>{t.footerText}</Text>
+          {unsubscribeUrl && (
+            <Text style={unsubscribeText}>
+              <Link style={unsubscribeLink} href={unsubscribeUrl}>
+                {t.unsubscribe}
+              </Link>
+            </Text>
+          )}
+        </Container>
+      </Body>
+    </Html>
+  );
+}
+
+// 样式 - 深色主题（与 m0rphic 一致）
+const main = {
+  backgroundColor: "#0a0a0a",
+  fontFamily:
+    '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Ubuntu, sans-serif',
+  padding: "40px 0",
+};
+
+const container = {
+  backgroundColor: "#141414",
+  margin: "0 auto",
+  padding: "40px 20px",
+  maxWidth: "560px",
+  borderRadius: "12px",
+};
+
+const logoSection = {
+  textAlign: "center" as const,
+  marginBottom: "24px",
+};
+
+const logoText = {
+  fontSize: "20px",
+  fontWeight: "600",
+  color: "#ffffff",
+  margin: "0",
+};
+
+const heading = {
+  color: "#ffffff",
+  fontSize: "24px",
+  fontWeight: "600",
+  textAlign: "center" as const,
+  margin: "0 0 8px",
+};
+
+const dateText = {
+  color: "#737373",
+  fontSize: "14px",
+  textAlign: "center" as const,
+  margin: "0 0 24px",
+};
+
+const paragraph = {
+  color: "#a3a3a3",
+  fontSize: "15px",
+  lineHeight: "24px",
+  margin: "16px 0",
+};
+
+const categorySection = {
+  margin: "32px 0",
+};
+
+const categoryTitle = {
+  color: "#ffffff",
+  fontSize: "16px",
+  fontWeight: "600",
+  margin: "0 0 16px",
+  borderBottom: "1px solid #262626",
+  paddingBottom: "8px",
+};
+
+const changeCard = {
+  backgroundColor: "#1a1a1a",
+  borderRadius: "8px",
+  padding: "16px",
+  marginBottom: "12px",
+  borderLeft: "3px solid #8b5cf6",
+};
+
+const changeTitle = {
+  color: "#ffffff",
+  fontSize: "15px",
+  fontWeight: "600",
+  margin: "0 0 8px",
+};
+
+const changeDescription = {
+  color: "#a3a3a3",
+  fontSize: "14px",
+  lineHeight: "20px",
+  margin: "0",
+};
+
+const projectTag = {
+  color: "#8b5cf6",
+  fontSize: "12px",
+  marginTop: "8px",
+  marginBottom: "0",
+};
+
+const buttonContainer = {
+  textAlign: "center" as const,
+  margin: "32px 0",
+};
+
+const button = {
+  backgroundColor: "#8b5cf6",
+  borderRadius: "8px",
+  color: "#ffffff",
+  fontSize: "15px",
+  fontWeight: "600",
+  textDecoration: "none",
+  textAlign: "center" as const,
+  display: "inline-block",
+  padding: "12px 24px",
+};
+
+const hr = {
+  borderColor: "#262626",
+  margin: "32px 0",
+};
+
+const footer = {
+  color: "#525252",
+  fontSize: "12px",
+  textAlign: "center" as const,
+  margin: "0",
+};
+
+const unsubscribeText = {
+  textAlign: "center" as const,
+  marginTop: "16px",
+};
+
+const unsubscribeLink = {
+  color: "#525252",
+  fontSize: "12px",
+  textDecoration: "underline",
+};
+
+export default ChangelogEmail;
+```
+
+### Twitter 帖子串生成器模板
+
+```typescript
+interface TwitterThread {
+  tweets: string[];
+  totalLength: number;
+  warnings: string[];
+}
+
+function generateTwitterThread(
+  changes: ChangeCategory[],
+  options: {
+    productName: string;
+    productUrl: string;
+    locale: "en" | "zh";
+    totalCommits: number;
+  }
+): TwitterThread {
+  const { productName, productUrl, locale, totalCommits } = options;
+  const tweets: string[] = [];
+  const warnings: string[] = [];
+
+  // 推文 1：钩子
+  const hook = locale === "en"
+    ? `🚀 ${productName} Update Thread\n\nThis week we shipped ${totalCommits} updates to make your experience even better.\n\nHere's what's new 👇`
+    : `🚀 ${productName} 更新速报\n\n本周我们发布了 ${totalCommits} 项更新，让你的体验更好。\n\n一起来看看 👇`;
+
+  tweets.push(hook);
+
+  // 中间推文：变更（按分类分组）
+  const emojiMap: Record<string, string> = {
+    features: "✨",
+    fixes: "🔧",
+    performance: "⚡",
+    security: "🔒",
+    improvements: "💎",
+  };
+
+  const categoryLabels: Record<string, Record<string, string>> = {
+    features: { en: "New", zh: "新功能" },
+    fixes: { en: "Fixed", zh: "修复" },
+    performance: { en: "Faster", zh: "更快" },
+    security: { en: "Secured", zh: "安全" },
+    improvements: { en: "Improved", zh: "优化" },
+  };
+
+  for (const category of changes) {
+    if (category.items.length === 0) continue;
+
+    const emoji = emojiMap[category.key] || "📦";
+    const label = categoryLabels[category.key]?.[locale] || category.key;
+
+    // 每个分类尽量合并到一条推文（如果可能）
+    const itemList = category.items
+      .slice(0, 3) // 每个分类最多 3 项
+      .map((item) => `• ${item.title}`)
+      .join("\n");
+
+    const tweet = `${emoji} ${label}:\n\n${itemList}`;
+
+    if (tweet.length > 280) {
+      warnings.push(`分类 "${category.key}" 的推文超过 280 字符`);
+    }
+
+    tweets.push(tweet);
+  }
+
+  // 最后一条推文：行动号召
+  const cta = locale === "en"
+    ? `That's a wrap! 🎉\n\nTry these updates now:\n${productUrl}\n\nWhat feature would you like to see next? Let us know! 💬`
+    : `以上就是本周的更新！🎉\n\n立即体验：\n${productUrl}\n\n还想要什么功能？评论区告诉我们！💬`;
+
+  tweets.push(cta);
+
+  return {
+    tweets,
+    totalLength: tweets.reduce((sum, t) => sum + t.length, 0),
+    warnings,
+  };
+}
+```
+
+### 使用示例
+
+```bash
+# 生成英文更新日志（默认）
+/ceo changelog
+
+# 生成中文更新日志
+/ceo changelog --lang=zh
+
+# 分析过去 3 天
+/ceo changelog --days=3
+
+# 仅分析特定项目
+/ceo changelog --project=saifuri
+
+# 仅邮件（不含 Twitter）
+/ceo changelog --format=email
+
+# 仅 Twitter（不含邮件）
+/ceo changelog --format=twitter
+```
+
+### 缓存结构
+
+在 `ceo-dashboard.json` 中添加更新日志历史：
+
+```json
+{
+  "changelog_history": [
+    {
+      "date": "2026-01-23",
+      "period_days": 1,
+      "projects": ["saifuri", "kimeeru"],
+      "total_commits": 12,
+      "categories": {
+        "features": 4,
+        "fixes": 5,
+        "performance": 2,
+        "ux": 1
+      },
+      "output_lang": "zh"
+    }
+  ]
+}
+```
+
+### 触发词
+
+以下自然语言短语应触发更新日志功能：
+- "从最近的提交生成营销更新"
+- "写一封更新日志邮件"
+- "为最近的变更创建 Twitter 帖子串"
+- "这周我们发布了什么？"
+- "为用户总结最近的开发进展"
+- "生成发布说明"
+- "写更新通讯"

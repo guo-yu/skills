@@ -75,6 +75,8 @@ Evaluate launch readiness:
 | `/ceo costs <name>` | Detailed cost analysis for a specific project |
 | `/ceo costs refresh` | Force rescan of all API services |
 | `/ceo costs set <project> <service> <amount>` | Manually set actual monthly cost |
+| `/ceo changelog [--lang=en\|zh]` | Generate marketing changelog from last 24h commits |
+| `/ceo changelog --days=N` | Analyze commits from last N days (default: 1) |
 
 ## Triggers
 
@@ -952,3 +954,705 @@ The main dashboard includes an `Est.Cost` column:
 ```
 
 The cost shown is the "medium" estimate unless manual overrides are set.
+
+## Marketing Changelog Generator
+
+Generate user-focused marketing content from recent git commits. Transform technical changes into compelling updates that resonate with users.
+
+### CMO Role Setting
+
+When generating changelog content, you adopt the persona of:
+
+**A brilliant Chief Marketing Officer (CMO)** who has:
+- 10+ years of experience in tech product marketing
+- Deep expertise in transforming technical features into user benefits
+- Track record of viral product launches and community building
+- Sharp instincts for what makes users excited and engaged
+- Experience crafting narratives that drive adoption and retention
+
+**Your communication mindset:**
+- Technical commits tell the "what"; you communicate the "why it matters to users"
+- Every change is an opportunity to demonstrate value and care for users
+- Speak in benefits, not features: "faster" → "get back to work sooner"
+- Use emotional triggers: save time, reduce frustration, feel confident
+- Create FOMO: "You can now..." implies others already benefit
+- Be authentic, not salesy: users detect fake enthusiasm instantly
+
+**Tone guidelines by language:**
+| Language | Tone | Style |
+|----------|------|-------|
+| English | Friendly, confident, concise | Tech-savvy but accessible |
+| Chinese | Warm, professional, respectful | 正式但亲切，避免过度营销感 |
+
+### Command: `/ceo changelog`
+
+Analyze recent commits and generate marketing content.
+
+**Options:**
+- `--lang=en|zh` - Output language (default: en)
+- `--days=N` - Days to analyze (default: 1, max: 7)
+- `--project=<name>` - Analyze specific project only
+- `--format=email|twitter|both` - Output format (default: both)
+
+### Execution Steps
+
+#### Step 1: Gather Commits
+
+```bash
+# For each project in ceo-dashboard.json
+cd <project_path>
+
+# Get commits from last 24 hours (or N days)
+git log --since="24 hours ago" --pretty=format:"%H|%s|%an|%ai" --no-merges
+
+# Get file change statistics
+git log --since="24 hours ago" --stat --no-merges
+```
+
+#### Step 2: Categorize Changes
+
+Classify each commit by type using conventional commit patterns and content analysis:
+
+| Category | Detection Patterns | User-Facing Name |
+|----------|-------------------|------------------|
+| Feature | `feat:`, `add`, `new`, `implement` | New Features |
+| Fix | `fix:`, `bug`, `patch`, `resolve` | Bug Fixes |
+| Performance | `perf:`, `optimize`, `faster`, `speed` | Performance Improvements |
+| UX | `ui:`, `ux:`, `style`, `design` | User Experience |
+| Security | `security:`, `auth`, `encrypt`, `protect` | Security Updates |
+| Docs | `docs:`, `readme`, `guide` | Documentation |
+| Refactor | `refactor:`, `clean`, `restructure` | Behind the Scenes |
+
+**Aggregation rules:**
+- Group similar changes across projects
+- Prioritize user-facing changes over internal refactors
+- Count commits per category for emphasis weighting
+
+#### Step 3: Transform to User Benefits
+
+For each change category, apply the CMO transformation:
+
+| Technical Change | User Benefit |
+|-----------------|--------------|
+| "Add caching layer" | "Pages now load 2x faster" |
+| "Fix auth token refresh" | "No more unexpected logouts" |
+| "Implement dark mode" | "Easier on your eyes at night" |
+| "Refactor database queries" | "Search results appear instantly" |
+| "Add rate limiting" | "More reliable service during peak hours" |
+
+**Transformation prompt template:**
+```
+Given this technical commit: "<commit_message>"
+In project: <project_name> (<project_description>)
+
+Transform into a user-focused benefit statement:
+- Focus on what the user gains
+- Use active voice
+- Be specific but concise
+- Avoid technical jargon
+```
+
+#### Step 4: Generate Email Template
+
+Output a React Email compatible template following m0rphic styling patterns.
+
+**Email Structure:**
+```tsx
+// Resend-compatible React Email template
+import {
+  Body, Button, Container, Head, Heading, Hr,
+  Html, Link, Preview, Section, Text,
+} from "@react-email/components";
+
+interface ChangelogEmailProps {
+  locale: "en" | "zh";
+  dateRange: string;
+  changes: {
+    category: string;
+    items: { title: string; description: string; project: string }[];
+  }[];
+  ctaUrl: string;
+  totalCommits: number;
+  projectCount: number;
+}
+```
+
+**Color Palette (Dark Theme):**
+```typescript
+const colors = {
+  background: "#0a0a0a",
+  container: "#141414",
+  card: "#1a1a1a",
+  accent: "#8b5cf6",      // Purple
+  success: "#22c55e",     // Green
+  text: {
+    primary: "#ffffff",
+    secondary: "#a3a3a3",
+    muted: "#737373",
+    subtle: "#525252",
+  },
+  border: "#262626",
+};
+```
+
+**Email Translations:**
+```typescript
+const translations = {
+  en: {
+    preview: (count: number) => `[Your Product] Weekly Update - ${count} improvements shipped`,
+    title: "What's New This Week",
+    greeting: "Hey there,",
+    intro: (commits: number, projects: number) =>
+      `Our team has been busy! Here's what we shipped across ${projects} project${projects > 1 ? 's' : ''}:`,
+    newFeatures: "New Features",
+    bugFixes: "Bug Fixes",
+    improvements: "Improvements",
+    security: "Security Updates",
+    cta: "Try It Now",
+    footer: "Thanks for being part of our journey!",
+  },
+  zh: {
+    preview: (count: number) => `[产品名] 本周更新 - ${count} 项改进已上线`,
+    title: "最新动态",
+    greeting: "你好，",
+    intro: (commits: number, projects: number) =>
+      `我们的团队一直在努力！以下是 ${projects} 个项目的最新进展：`,
+    newFeatures: "新功能",
+    bugFixes: "问题修复",
+    improvements: "体验优化",
+    security: "安全更新",
+    cta: "立即体验",
+    footer: "感谢你的支持与信任！",
+  },
+};
+```
+
+#### Step 5: Generate Twitter/X Thread
+
+Create a Twitter thread (single thread, multiple tweets) format.
+
+**Thread Structure:**
+```
+Tweet 1 (Hook - max 280 chars):
+🚀 [Product] Update Thread
+
+This week we shipped [N] updates to make your experience even better.
+
+Here's what's new 👇
+
+---
+Tweet 2-N (Changes - max 280 chars each):
+✨ [Category]: [Benefit Statement]
+
+[Brief explanation of why this matters]
+
+---
+Final Tweet (CTA - max 280 chars):
+That's a wrap! 🎉
+
+Try these updates now: [link]
+
+What feature would you like to see next? Let us know in the replies!
+```
+
+**Thread Rules:**
+- Maximum 5-7 tweets per thread
+- Each tweet must be ≤280 characters
+- Use emojis strategically (not excessively)
+- First tweet is the hook - must grab attention
+- Last tweet is CTA + engagement prompt
+- Middle tweets group related changes
+
+**Emoji Guide:**
+| Category | Emoji |
+|----------|-------|
+| Feature | ✨ |
+| Fix | 🔧 |
+| Performance | ⚡ |
+| Security | 🔒 |
+| UX | 💎 |
+| General | 🚀 |
+
+### Output Format
+
+```
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  MARKETING CHANGELOG - 2026-01-23
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  📊 ANALYSIS SUMMARY
+  ────────────────────────────────────────────────────────────────────
+  Period:           Last 24 hours
+  Projects:         3 (saifuri, kimeeru, m0rphic)
+  Total Commits:    12
+
+  By Category:
+    ✨ Features:    4 commits
+    🔧 Fixes:       5 commits
+    ⚡ Performance: 2 commits
+    💎 UX:          1 commit
+
+  📧 EMAIL TEMPLATE (Resend-compatible React Email)
+  ────────────────────────────────────────────────────────────────────
+
+  [Generated TSX code here - copy-paste ready]
+
+  🐦 TWITTER/X THREAD
+  ────────────────────────────────────────────────────────────────────
+
+  Thread 1/5:
+  🚀 Weekly Update Thread
+
+  This week we shipped 12 updates across 3 products.
+
+  Here's what's new 👇
+
+  ---
+  Thread 2/5:
+  ✨ New: Smart notifications
+
+  Get notified about what matters, when it matters.
+  No more notification fatigue.
+
+  ---
+  [... more tweets ...]
+
+  ---
+  Thread 5/5:
+  That's a wrap! 🎉
+
+  Try these updates: https://yourproduct.com
+
+  What feature would you like next? Reply below!
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+```
+
+### Full Email Template Example
+
+```tsx
+import {
+  Body,
+  Button,
+  Container,
+  Head,
+  Heading,
+  Hr,
+  Html,
+  Link,
+  Preview,
+  Section,
+  Text,
+} from "@react-email/components";
+
+const translations = {
+  en: {
+    preview: (count: number) =>
+      `We shipped ${count} updates to make your experience better`,
+    title: "What's New",
+    greeting: "Hey there,",
+    intro: (commits: number, projects: number) =>
+      `Our team has been busy! Here are ${commits} updates we shipped this week:`,
+    newFeatures: "New Features",
+    bugFixes: "Bug Fixes",
+    improvements: "Improvements",
+    cta: "Try It Now",
+    footerText: "Thanks for being part of our journey!",
+    unsubscribe: "Unsubscribe from updates",
+  },
+  zh: {
+    preview: (count: number) => `我们发布了 ${count} 项更新，让你的体验更好`,
+    title: "最新动态",
+    greeting: "你好，",
+    intro: (commits: number, projects: number) =>
+      `我们的团队一直在努力！以下是本周发布的 ${commits} 项更新：`,
+    newFeatures: "新功能",
+    bugFixes: "问题修复",
+    improvements: "体验优化",
+    cta: "立即体验",
+    footerText: "感谢你与我们同行！",
+    unsubscribe: "退订更新通知",
+  },
+} as const;
+
+type Locale = keyof typeof translations;
+
+interface ChangeItem {
+  title: string;
+  description: string;
+  project?: string;
+}
+
+interface ChangeCategory {
+  key: string;
+  emoji: string;
+  items: ChangeItem[];
+}
+
+interface ChangelogEmailProps {
+  locale?: Locale;
+  productName: string;
+  productUrl: string;
+  dateRange: string;
+  totalCommits: number;
+  projectCount: number;
+  changes: ChangeCategory[];
+  unsubscribeUrl?: string;
+}
+
+export function ChangelogEmail({
+  locale = "en",
+  productName,
+  productUrl,
+  dateRange,
+  totalCommits,
+  projectCount,
+  changes,
+  unsubscribeUrl,
+}: ChangelogEmailProps) {
+  const t = translations[locale] || translations.en;
+
+  const categoryNames: Record<string, Record<Locale, string>> = {
+    features: { en: "New Features", zh: "新功能" },
+    fixes: { en: "Bug Fixes", zh: "问题修复" },
+    improvements: { en: "Improvements", zh: "体验优化" },
+    security: { en: "Security Updates", zh: "安全更新" },
+    performance: { en: "Performance", zh: "性能优化" },
+  };
+
+  return (
+    <Html>
+      <Head />
+      <Preview>{t.preview(totalCommits)}</Preview>
+      <Body style={main}>
+        <Container style={container}>
+          {/* Logo/Brand */}
+          <Section style={logoSection}>
+            <Text style={logoText}>{productName}</Text>
+          </Section>
+
+          {/* Title */}
+          <Heading style={heading}>{t.title}</Heading>
+          <Text style={dateText}>{dateRange}</Text>
+
+          {/* Greeting & Intro */}
+          <Text style={paragraph}>{t.greeting}</Text>
+          <Text style={paragraph}>
+            {t.intro(totalCommits, projectCount)}
+          </Text>
+
+          {/* Changes by Category */}
+          {changes.map((category, i) => (
+            <Section key={i} style={categorySection}>
+              <Text style={categoryTitle}>
+                {category.emoji} {categoryNames[category.key]?.[locale] || category.key}
+              </Text>
+              {category.items.map((item, j) => (
+                <Section key={j} style={changeCard}>
+                  <Text style={changeTitle}>{item.title}</Text>
+                  <Text style={changeDescription}>{item.description}</Text>
+                  {item.project && (
+                    <Text style={projectTag}>{item.project}</Text>
+                  )}
+                </Section>
+              ))}
+            </Section>
+          ))}
+
+          {/* CTA Button */}
+          <Section style={buttonContainer}>
+            <Button style={button} href={productUrl}>
+              {t.cta}
+            </Button>
+          </Section>
+
+          <Hr style={hr} />
+
+          {/* Footer */}
+          <Text style={footer}>{t.footerText}</Text>
+          {unsubscribeUrl && (
+            <Text style={unsubscribeText}>
+              <Link style={unsubscribeLink} href={unsubscribeUrl}>
+                {t.unsubscribe}
+              </Link>
+            </Text>
+          )}
+        </Container>
+      </Body>
+    </Html>
+  );
+}
+
+// Styles - Dark theme matching m0rphic
+const main = {
+  backgroundColor: "#0a0a0a",
+  fontFamily:
+    '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Ubuntu, sans-serif',
+  padding: "40px 0",
+};
+
+const container = {
+  backgroundColor: "#141414",
+  margin: "0 auto",
+  padding: "40px 20px",
+  maxWidth: "560px",
+  borderRadius: "12px",
+};
+
+const logoSection = {
+  textAlign: "center" as const,
+  marginBottom: "24px",
+};
+
+const logoText = {
+  fontSize: "20px",
+  fontWeight: "600",
+  color: "#ffffff",
+  margin: "0",
+};
+
+const heading = {
+  color: "#ffffff",
+  fontSize: "24px",
+  fontWeight: "600",
+  textAlign: "center" as const,
+  margin: "0 0 8px",
+};
+
+const dateText = {
+  color: "#737373",
+  fontSize: "14px",
+  textAlign: "center" as const,
+  margin: "0 0 24px",
+};
+
+const paragraph = {
+  color: "#a3a3a3",
+  fontSize: "15px",
+  lineHeight: "24px",
+  margin: "16px 0",
+};
+
+const categorySection = {
+  margin: "32px 0",
+};
+
+const categoryTitle = {
+  color: "#ffffff",
+  fontSize: "16px",
+  fontWeight: "600",
+  margin: "0 0 16px",
+  borderBottom: "1px solid #262626",
+  paddingBottom: "8px",
+};
+
+const changeCard = {
+  backgroundColor: "#1a1a1a",
+  borderRadius: "8px",
+  padding: "16px",
+  marginBottom: "12px",
+  borderLeft: "3px solid #8b5cf6",
+};
+
+const changeTitle = {
+  color: "#ffffff",
+  fontSize: "15px",
+  fontWeight: "600",
+  margin: "0 0 8px",
+};
+
+const changeDescription = {
+  color: "#a3a3a3",
+  fontSize: "14px",
+  lineHeight: "20px",
+  margin: "0",
+};
+
+const projectTag = {
+  color: "#8b5cf6",
+  fontSize: "12px",
+  marginTop: "8px",
+  marginBottom: "0",
+};
+
+const buttonContainer = {
+  textAlign: "center" as const,
+  margin: "32px 0",
+};
+
+const button = {
+  backgroundColor: "#8b5cf6",
+  borderRadius: "8px",
+  color: "#ffffff",
+  fontSize: "15px",
+  fontWeight: "600",
+  textDecoration: "none",
+  textAlign: "center" as const,
+  display: "inline-block",
+  padding: "12px 24px",
+};
+
+const hr = {
+  borderColor: "#262626",
+  margin: "32px 0",
+};
+
+const footer = {
+  color: "#525252",
+  fontSize: "12px",
+  textAlign: "center" as const,
+  margin: "0",
+};
+
+const unsubscribeText = {
+  textAlign: "center" as const,
+  marginTop: "16px",
+};
+
+const unsubscribeLink = {
+  color: "#525252",
+  fontSize: "12px",
+  textDecoration: "underline",
+};
+
+export default ChangelogEmail;
+```
+
+### Twitter Thread Generator Template
+
+```typescript
+interface TwitterThread {
+  tweets: string[];
+  totalLength: number;
+  warnings: string[];
+}
+
+function generateTwitterThread(
+  changes: ChangeCategory[],
+  options: {
+    productName: string;
+    productUrl: string;
+    locale: "en" | "zh";
+    totalCommits: number;
+  }
+): TwitterThread {
+  const { productName, productUrl, locale, totalCommits } = options;
+  const tweets: string[] = [];
+  const warnings: string[] = [];
+
+  // Tweet 1: Hook
+  const hook = locale === "en"
+    ? `🚀 ${productName} Update Thread\n\nThis week we shipped ${totalCommits} updates to make your experience even better.\n\nHere's what's new 👇`
+    : `🚀 ${productName} 更新速报\n\n本周我们发布了 ${totalCommits} 项更新，让你的体验更好。\n\n一起来看看 👇`;
+
+  tweets.push(hook);
+
+  // Middle tweets: Changes (group by category)
+  const emojiMap: Record<string, string> = {
+    features: "✨",
+    fixes: "🔧",
+    performance: "⚡",
+    security: "🔒",
+    improvements: "💎",
+  };
+
+  const categoryLabels: Record<string, Record<string, string>> = {
+    features: { en: "New", zh: "新功能" },
+    fixes: { en: "Fixed", zh: "修复" },
+    performance: { en: "Faster", zh: "更快" },
+    security: { en: "Secured", zh: "安全" },
+    improvements: { en: "Improved", zh: "优化" },
+  };
+
+  for (const category of changes) {
+    if (category.items.length === 0) continue;
+
+    const emoji = emojiMap[category.key] || "📦";
+    const label = categoryLabels[category.key]?.[locale] || category.key;
+
+    // Combine items into one tweet per category (if possible)
+    const itemList = category.items
+      .slice(0, 3) // Max 3 items per category
+      .map((item) => `• ${item.title}`)
+      .join("\n");
+
+    const tweet = `${emoji} ${label}:\n\n${itemList}`;
+
+    if (tweet.length > 280) {
+      warnings.push(`Category "${category.key}" tweet exceeds 280 chars`);
+    }
+
+    tweets.push(tweet);
+  }
+
+  // Final tweet: CTA
+  const cta = locale === "en"
+    ? `That's a wrap! 🎉\n\nTry these updates now:\n${productUrl}\n\nWhat feature would you like to see next? Let us know! 💬`
+    : `以上就是本周的更新！🎉\n\n立即体验：\n${productUrl}\n\n还想要什么功能？评论区告诉我们！💬`;
+
+  tweets.push(cta);
+
+  return {
+    tweets,
+    totalLength: tweets.reduce((sum, t) => sum + t.length, 0),
+    warnings,
+  };
+}
+```
+
+### Usage Examples
+
+```bash
+# Generate changelog in English (default)
+/ceo changelog
+
+# Generate changelog in Chinese
+/ceo changelog --lang=zh
+
+# Analyze last 3 days
+/ceo changelog --days=3
+
+# Analyze specific project only
+/ceo changelog --project=saifuri
+
+# Email only (no Twitter)
+/ceo changelog --format=email
+
+# Twitter only (no email)
+/ceo changelog --format=twitter
+```
+
+### Cache Structure
+
+Add changelog history to `ceo-dashboard.json`:
+
+```json
+{
+  "changelog_history": [
+    {
+      "date": "2026-01-23",
+      "period_days": 1,
+      "projects": ["saifuri", "kimeeru"],
+      "total_commits": 12,
+      "categories": {
+        "features": 4,
+        "fixes": 5,
+        "performance": 2,
+        "ux": 1
+      },
+      "output_lang": "en"
+    }
+  ]
+}
+```
+
+### Triggers
+
+Natural language phrases that invoke changelog:
+- "Generate marketing update from recent commits"
+- "Write a changelog email"
+- "Create Twitter thread for recent changes"
+- "What did we ship this week?"
+- "Summarize recent development for users"
+- "Generate release notes"
+- "Write update newsletter"
